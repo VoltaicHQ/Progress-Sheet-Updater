@@ -5,7 +5,7 @@ This Program was made by Yondaime with much appreciated help from Nops, Knar and
 
 ### Prerequisits:
 You need to have a copy of the Sparky Benchmark Progress Sheet on your Google Account.  
-If you do not have one already you can create a copy from here https://bit.ly/3g1HkeE  
+If you do not have one already you can create a copy from [here](https://bit.ly/3g1HkeE)  
 Later on you will be asked to log in with your Google account, so if you do not fully trust this program I recommend to create the sheet on a new, empty Google Account  
 Also make sure you have the statistic export in Kovaak's set to "Completion"  
 
