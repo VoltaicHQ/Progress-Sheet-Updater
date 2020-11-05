@@ -1,6 +1,5 @@
 import os.path
 
-
 # Create class to use functions in main.py
 class Pathreader:
     # Write the path the user input into the path.txt file in the application folder
