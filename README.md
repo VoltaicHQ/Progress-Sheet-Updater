@@ -21,14 +21,10 @@ Paste the file you just downloaded into the same folder as the rest of the appli
 The API you just set up will be used to dump the login credentials and to update the scores on your Spreadsheet  
 
 #### Step Two: Setting up the Spreadsheet ID
-In the same folder as the rest of the program you will find a "spreadsheetid.txt"  
-Open this file and paste the ID of your spreadsheet into it  
-You can find it in the Link to your Spreadsheet  
-Example: http<span>s</span>://docs.google.com/spreadsheets/d/abc1234567/edit#gid=0 here the id would be "abc1234567", your ID is probably longer  
+In the same folder as the rest of the program you will find a "spreadsheetlink.txt"  
+Open this file and paste the link to your spreadsheet into it  
+Example: http<span>s</span>://docs.google.com/spreadsheets/d/abc1234567/edit#gid=0 it should follow this style
 Save and exit the file  
-###### Optional:  
-While you are here you can also create "a path.txt" and input the path to your Kovaaks Stat folder in it  
-If you choose not to you will be asked to input it later in the program  
 
 #### Step Three: Setting up the path to the Stats folder
 When you start the Program for the first time you will be asked to input the path to your Kovaaks Stats folder  
@@ -41,13 +37,18 @@ Once you grant access a file called "token.pickle" will be created, this will be
 
 
 ## Usage:
-Once the program is running it will look through the recently exported statistics and update your Benchmark Scores if any Highscores were achieved  
-In the future it will also update the average tab  
+
+After setting everything up correctly you can let the program run in the background while you play Kovaaks's.  
+It will detect if you played a Sparky Benchmark and automatically update your Progress Sheet.  
+If you want you can open the console window on a second monitor and it will give you feedback on what has changed.  
+You can also just open your Progress Sheet and it will update in real time.
 If you want to exit the program press Ctrl+C  
 
+
 ## Troubleshooting:
+
 If you mistyped the path to your stats folder the program will not run, so delete the "path.txt" and start the program again  
-If your "spreadsheetid.txt" is empty the program will also stop, so make sure you paste the id in  
-If the Spreadsheetid in your "Spreadsheetid.txt" is wrong the program will stop, so make sure it is correct  
+If your "spreadsheetlink.txt" is empty the program will also stop, so make sure you paste the link in  
+If the link in your "Spreadsheetlink.txt" is wrong the program will stop, so make sure it is correct  
 
 If you need help and the Troubleshooting is not working dm Yondaime#1370 on the [Sparky Discord](https://discord.gg/sparky)  
