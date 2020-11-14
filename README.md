@@ -8,9 +8,11 @@ You need to have a copy of the Voltaic Benchmark Progress Sheet on your Google A
 If you do not have one already you can create a copy from [here](https://bit.ly/3g1HkeE).  
 Later on you will be asked to log in with your Google account, so if you do not fully trust this program I recommend to create the sheet on a new, empty Google Account.  
 Also make sure you have the statistic export setting in Kovaak's set to "Challenge Completion".  
+![Statisticexport](/readmeimages/statisticexport.png)  
 
 #### Step One: Downloading the Program
 Go to the [Release](https://github.com/Y0ndaime/Progress-Sheet-Updater/releases) part of this repository and download the newest .zip.  
+![Release](/readmeimages/release.png)  
 Once downloaded extract the folder inside the .zip to the place where you want to have it.  
 This folder is where you will have to put the files in the next steps.
 
@@ -18,10 +20,14 @@ This folder is where you will have to put the files in the next steps.
 Make sure you are using the Google Account with the Sheet for this Step!  
 Go to [here](https://developers.google.com/sheets/api/quickstart/python).  
 Click the "Enable Google Sheets API" Button.  
+![Enable Sheets API](/readmeimages/enablegooglesheetsapi.png)  
 Choose a Name, for example "Progress Sheet", then click Next.  
+![API name](/readmeimages/apiname.png)  
 Choose "Desktop app" and click "CREATE".  
+![Desktopapp](/readmeimages/desktopapp.png)  
 Then choose "DOWNLOAD CLIENT CONFIGURATION".  
-Paste the file you just downloaded into the same folder as the rest of the application.  
+![Downloadclientconfig](/readmeimages/downloadclientconfig.png)  
+Paste the file you just downloaded (credentials.json) into the same folder as the rest of the application.  
 
 The API you just set up will be used to dump the login credentials and to update the scores on your Spreadsheet.  
 
@@ -29,6 +35,7 @@ The API you just set up will be used to dump the login credentials and to update
 In the same folder as the rest of the program you will find a "spreadsheetlink.txt".  
 Open this file and paste the link to your spreadsheet into it.  
 Examplelink: http<span>s</span>://docs.google.com/spreadsheets/d/abc1234567/edit#gid=0, it should follow this style.  
+![Spreadsheetlink](/readmeimages/spreadsheetlink.png)  
 Save and exit the file.  
 
 #### Step Four: Setting up the path to the Stats folder
