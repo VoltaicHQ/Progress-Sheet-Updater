@@ -5,14 +5,20 @@ import os
 import time
 
 # Global Variables
-average_pointers = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  # Points to the index where the new
-# score will be added in average tab
-benchmark_range_name = 'Benchmarks!F3:F22'
-average_range_name = 'Average for benchmarks!D2:H21'
+average_pointers = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+# Points to the index where the new score will be added in average tab
+INTERMEDIATE_SCORE_RANGE = 'Intermediate Requirements!G3:G20'
+ADVANCED_SCORE_RANGE = 'Advanced Requirements!G3:G20'
+INTERMEDIATE_AVERAGE_RANGE = 'Intermediate Requirements!M3:M20'
+ADVANCED_AVERAGE_RANGE = 'Advanced Requirements!M3:M20'
+INTERMEDIATE_NAME_RANGE = 'Intermediate Requirements!E3:E20'
+ADVANCED_NAME_RANGE = 'Advanced Requirements!E3:E20'
+
 # Objects from the imported classes
 sr = spreadSheetReader
 pr = pathReader
 op = consoleOutput
+
 
 # Functions
 # Function to clear console window
@@ -33,11 +39,10 @@ def movepointer(index_played_bench):
 
 
 # Create GoogleAPI Service
-
-bench_spreadsheet_id = sr.read_spreadsheet_id(sr)
-sr.check_spreadsheet_id(sr, bench_spreadsheet_id)
+BENCH_SPREADSHEET_ID = sr.read_spreadsheet_id(sr)
+sr.check_spreadsheet_id(sr, BENCH_SPREADSHEET_ID)
 service = sr.create_service(sr)
-
+sheet = service.spreadsheets()
 # Check if path to stats folder was already given, if not create it
 path = pr.get_path(pr)
 
@@ -45,32 +50,81 @@ path = pr.get_path(pr)
 all_files = os.listdir(path)
 
 # Create a list with all Benchmarknames
-benchmark_names = sr.get_benchmarks(sr)
+result_names_intermediate = sheet.values().get(spreadsheetId=BENCH_SPREADSHEET_ID,
+                                               range=INTERMEDIATE_NAME_RANGE).execute()
+result_names_advanced = sheet.values().get(spreadsheetId=BENCH_SPREADSHEET_ID,
+                                           range=ADVANCED_NAME_RANGE).execute()
+names_intermediate = []
+names_intermediate = result_names_intermediate.get("values", [])
+names_advanced = result_names_advanced.get("values", [])
 
-# Initialize list highscores and connection to benchmark part of sheet
-sheet = service.spreadsheets()
-result_highscores = sheet.values().get(spreadsheetId=bench_spreadsheet_id, range=benchmark_range_name).execute()
-highscores = result_highscores.get("values", [])
+benchmark_names = names_intermediate + names_advanced
+del benchmark_names[21:24]
 
+i = 0
+while i < len(benchmark_names):
+    benchmark_names[i] = benchmark_names[i][0].strip()
+    i += 1
+# Initialize both lists for highscores and connection to benchmark part of sheet
+
+result_highscores_intermediate = sheet.values().get(spreadsheetId=BENCH_SPREADSHEET_ID,
+                                                    range=INTERMEDIATE_SCORE_RANGE).execute()
+result_highscores_advanced = sheet.values().get(spreadsheetId=BENCH_SPREADSHEET_ID,
+                                                range=ADVANCED_SCORE_RANGE).execute()
+highscores_intermediate = result_highscores_intermediate.get("values", [])
+highscores_advanced = result_highscores_advanced.get("values", [])
 # Change values in the lists inside the highscores to float, or sheets will weird out, also insert 0 into empty columns
-for score in highscores:
+while len(highscores_intermediate) < 18:
+    highscores_intermediate.append([0])
+
+while len(highscores_advanced) < 18:
+    highscores_advanced.append([0])
+
+for score in highscores_intermediate:
     if not score:
         score.insert(0, "0")
     score[0] = float(score[0])
 
-# Initialize list averages and connection to average part of sheet
-result_averages = sheet.values().get(spreadsheetId=bench_spreadsheet_id, range=average_range_name).execute()
-averages = result_averages.get("values", [])
+for score in highscores_advanced:
+    if not score:
+        score.insert(0, "0")
+    score[0] = float(score[0])
 
-# Change values in the lists inside the averages to float, or sheets will spaz out, also insert "" into empty lists
-while len(averages) < 20:
-    averages.insert(len(averages), [])
-for average in averages:
-    while len(average) < 5:
-        average.insert(len(average), "")
-    for score in average:
-        if score != "":
-            average[average.index(score)] = float(score)
+#  Create a list with all scores, then remove the ones that are duplicats
+highscores = highscores_intermediate + highscores_advanced
+del highscores[21:24]
+
+# Initialize lists for averages and connection to average part of sheet
+result_averages_intermediate = sheet.values().get(spreadsheetId=BENCH_SPREADSHEET_ID,
+                                                  range=INTERMEDIATE_AVERAGE_RANGE).execute()
+result_averages_advanced = sheet.values().get(spreadsheetId=BENCH_SPREADSHEET_ID,
+                                                  range=ADVANCED_AVERAGE_RANGE).execute()
+averages_intermediate = result_averages_intermediate.get("values", [])
+averages_advanced = result_averages_advanced.get("values", [])
+
+# Change values in the average lists to float, or sheets will spaz out, also insert 0 into empty cells
+while len(averages_intermediate) < 18:
+    averages_intermediate.append([0])
+
+while len(averages_advanced) < 18:
+    averages_advanced.append([0])
+
+for score in averages_intermediate:
+    if not score:
+        score.insert(0, "0")
+    score[0] = float(score[0])
+
+for score in averages_advanced:
+    if not score:
+        score.insert(0, "0")
+    score[0] = float(score[0])
+
+calculated_averages = averages_intermediate + averages_advanced
+del calculated_averages[21:24]
+
+averages = []
+for score in calculated_averages:
+    averages.append([score]*5)
 
 # Run a while that stops on Ctrl+C press
 try:
@@ -100,70 +154,131 @@ try:
                             current = float(line[7:])
                             current = round(current, 1)
                             pointerposition = movepointer(index_bench)
-                            averages[index_bench][pointerposition] = current
+                            averages[index_bench][pointerposition] = [current]
                             if current > benchmark_score:  # If new Score > Highscore
                                 highscores[benchmark_names.index(bench)][0] = current  # Update highscore of the bench
                                 found = True
+                            break
+        print(changed_bench_index)
 
         if bench_played:  # If a Bench was played update the average tab on the Googlesheet
-            valuesavg = [
-                averages[0],
-                averages[1],
-                averages[2],
-                averages[3],
-                averages[4],
-                averages[5],
-                averages[6],
-                averages[7],
-                averages[8],
-                averages[9],
-                averages[10],
-                averages[11],
-                averages[12],
-                averages[13],
-                averages[14],
-                averages[15],
-                averages[16],
-                averages[17],
-                averages[18],
-                averages[19],
-            ]
-            bodyavg = {
-                'values': valuesavg
-            }
-            result = service.spreadsheets().values().update(
-                spreadsheetId=bench_spreadsheet_id, range=average_range_name,
-                valueInputOption="RAW", body=bodyavg).execute()  # Send request to API, update the average tab
+            calculated_averages[changed_bench_index] = [op.get_average(op, averages, changed_bench_index)]
+            if changed_bench_index < 17:  # If the changed score is on the intermediate tab
+
+                valuesavg = [
+                    calculated_averages[0],
+                    calculated_averages[1],
+                    calculated_averages[2],
+                    calculated_averages[3],
+                    calculated_averages[4],
+                    calculated_averages[5],
+                    calculated_averages[6],
+                    calculated_averages[7],
+                    calculated_averages[8],
+                    calculated_averages[9],
+                    calculated_averages[10],
+                    calculated_averages[11],
+                    calculated_averages[12],
+                    calculated_averages[13],
+                    calculated_averages[14],
+                    calculated_averages[15],
+                    calculated_averages[16],
+                    calculated_averages[17],
+                ]
+                bodyavg = {
+                    'values': valuesavg
+                }
+                # Send request to API, update the average tab
+                result = service.spreadsheets().values().update(spreadsheetId=BENCH_SPREADSHEET_ID,
+                                                                range=INTERMEDIATE_AVERAGE_RANGE,
+                                                                valueInputOption="RAW",
+                                                                body=bodyavg).execute()
+            if changed_bench_index > 17 or changed_bench_index == 3 or changed_bench_index == 4 or changed_bench_index == 5:
+                values = [
+                    calculated_averages[18],
+                    calculated_averages[19],
+                    calculated_averages[20],
+                    calculated_averages[3],
+                    calculated_averages[4],
+                    calculated_averages[5],
+                    calculated_averages[21],
+                    calculated_averages[22],
+                    calculated_averages[23],
+                    calculated_averages[24],
+                    calculated_averages[25],
+                    calculated_averages[26],
+                    calculated_averages[27],
+                    calculated_averages[28],
+                    calculated_averages[29],
+                    calculated_averages[30],
+                    calculated_averages[31],
+                    calculated_averages[32],
+                    ]
+                body = {
+                    'values': values
+                }
+                # Send request to API, update benchmark tab
+                result = service.spreadsheets().values().update(
+                    spreadsheetId=BENCH_SPREADSHEET_ID, range=ADVANCED_AVERAGE_RANGE,
+                    valueInputOption="RAW", body=body).execute()
 
         if found:  # If a new Highscore was found update the value on the Google Sheet
-            values = [
-                highscores[0],
-                highscores[1],
-                highscores[2],
-                highscores[3],
-                highscores[4],
-                highscores[5],
-                highscores[6],
-                highscores[7],
-                highscores[8],
-                highscores[9],
-                highscores[10],
-                highscores[11],
-                highscores[12],
-                highscores[13],
-                highscores[14],
-                highscores[15],
-                highscores[16],
-                highscores[17],
-                highscores[18],
-                highscores[19],
-            ]
-            body = {
-                'values': values
-            }
-            result = service.spreadsheets().values().update(
-                spreadsheetId=bench_spreadsheet_id, range=benchmark_range_name,
-                valueInputOption="RAW", body=body).execute()  # Send request to API, update benchmark tab
+            if changed_bench_index < 17:  # If the changed score is on the intermediate tab
+                values = [
+                    highscores[0],
+                    highscores[1],
+                    highscores[2],
+                    highscores[3],
+                    highscores[4],
+                    highscores[5],
+                    highscores[6],
+                    highscores[7],
+                    highscores[8],
+                    highscores[9],
+                    highscores[10],
+                    highscores[11],
+                    highscores[12],
+                    highscores[13],
+                    highscores[14],
+                    highscores[15],
+                    highscores[16],
+                    highscores[17],
+                ]
+                body = {
+                    'values': values
+                }
+                result = service.spreadsheets().values().update(
+                    spreadsheetId=BENCH_SPREADSHEET_ID, range=INTERMEDIATE_SCORE_RANGE,
+                    valueInputOption="RAW", body=body).execute()  # Send request to API, update benchmark tab
+
+            if changed_bench_index > 17 or changed_bench_index == 3 or changed_bench_index == 4 or changed_bench_index == 5:
+                values = [
+                    highscores[18],
+                    highscores[19],
+                    highscores[20],
+                    highscores[3],
+                    highscores[4],
+                    highscores[5],
+                    highscores[22],
+                    highscores[23],
+                    highscores[23],
+                    highscores[24],
+                    highscores[25],
+                    highscores[26],
+                    highscores[27],
+                    highscores[28],
+                    highscores[29],
+                    highscores[30],
+                    highscores[31],
+                    highscores[32],
+                    ]
+                body = {
+                    'values': values
+                }
+                result = service.spreadsheets().values().update(
+                    spreadsheetId=BENCH_SPREADSHEET_ID, range=ADVANCED_SCORE_RANGE,
+                    valueInputOption="RAW", body=body).execute()  # Send request to API, update benchmark tab
+
         cls()
         op.create_output(op, found, benchmark_names, changed_bench_index, current, bench_played, averages)
         all_files = all_files_updated  # Update the value of allfiles, so that you dont compare the same new scores

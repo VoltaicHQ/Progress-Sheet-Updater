@@ -4,8 +4,6 @@ import pickle
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
-import csv
-import urllib.request
 import sys
 
 
@@ -72,18 +70,3 @@ class spreadSheetReader:
                 pickle.dump(creds, token)
         service = build('sheets', 'v4', credentials=creds)
         return service
-
-    def get_benchmarks(self):
-        # Read Benchmarks into a List (Thanks to Knar for helping me with this)
-        url = 'https://docs.google.com/spreadsheets/d/1xZXBuziZZKTbLR5uwP0-vlok0b07jv0mxXKgvHYPyB8/gviz/tq?tqx=out' \
-              ':csv&sheet=Benchmarks '
-        response = urllib.request.urlopen(url)
-        lines = [li.decode('utf-8') for li in response.readlines()]
-        sheet_rows = csv.reader(lines)
-        # Create a List with all Benchmark Names
-        benchmarknames = []
-        for row in sheet_rows:
-            if row[1] != "Scenario":
-                scenname = row[1]
-                benchmarknames.append(scenname)
-        return benchmarknames

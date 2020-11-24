@@ -7,7 +7,6 @@ cffi @ file:///C:/ci/cffi_1600699246375/work
 chardet==3.0.4
 colorama @ file:///tmp/build/80754af9/colorama_1603211150991/work
 cryptography @ file:///C:/ci/cryptography_1601046905460/work
-cx-Freeze==6.3
 future==0.18.2
 google-api-core==1.23.0
 google-api-python-client==1.12.5
@@ -25,8 +24,6 @@ protobuf==3.13.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser @ file:///tmp/build/80754af9/pycparser_1594388511720/work
-pyinstaller==4.0
-pyinstaller-hooks-contrib==2020.10
 pyOpenSSL @ file:///tmp/build/80754af9/pyopenssl_1594392929924/work
 PySocks==1.7.1
 pytz==2020.4
@@ -41,3 +38,5 @@ urllib3 @ file:///tmp/build/80754af9/urllib3_1603305693037/work
 win-inet-pton==1.1.0
 wincertstore==0.2
 zipp==3.4.0
+
+colorama~=0.4.4

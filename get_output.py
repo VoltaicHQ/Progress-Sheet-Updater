@@ -4,6 +4,20 @@ from datetime import datetime
 
 # This class handles creating the GoogleAPI Service and fetching the benchmark list
 class consoleOutput:
+    # Method to get the average from the averages list
+    def get_average(self, averages, changed_bench_index):
+        # Calculate the average of the changed benchmark
+        average = 0.0
+        count = 0
+        #  Since some scores might be empty we only count the ones that are not
+        for score in averages[changed_bench_index]:
+            if float(score[0]) != 0.0:
+                average = average + float(score[0])
+                count += 1
+        average = average / count
+        average = round(average, 1)
+        return average
+
     # Create console output, vary depending on if a benchmark was played and if a highscore was found
     def create_output(self, highscore_found, benchmark_names, changed_bench_index, current, bench_played, averages):
         print("Progress Sheet Updater made by", end=" ")
@@ -29,19 +43,10 @@ class consoleOutput:
         print(Fore.RESET + "was updated")
         print(Fore.RESET + "Average is now", end=" ")
         if bench_played:  # If a bench was played the average could change
-            # Calculate the average of the played benchmark
-            average = 0.0
-            count = 0
-            #  Since some scores might be empty we only count the ones that are not
-            for score in averages[changed_bench_index]:
-                if score != "":
-                    average = average + float(score)
-                    count += 1
-            average = average/count
-            average = round(average, 1)
-            print(Fore.BLUE + str(average))
+            print(Fore.BLUE + str(self.get_average(self, averages, changed_bench_index)))
         else:
             print(Fore.BLUE + "the same")
         print(Fore.RESET + "To stop the program press", end=" ")
         print(Fore.RED + "[Ctrl+C]")
         print(Fore.RESET + "If you have questions try reading the Readme")
+
