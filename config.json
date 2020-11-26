@@ -1,0 +1,7 @@
+{
+	"path_to_stats": "pathhere",
+	"link_to_sheet": "linkhere",
+	"update_sheet_on_startup": true,
+	"calculate_averages": true,
+	"num_of_runs_to_average": 5
+}

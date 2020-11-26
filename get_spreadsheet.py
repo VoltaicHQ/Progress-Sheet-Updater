@@ -10,20 +10,18 @@ import sys
 # This class handles creating the GoogleAPI Service and fetching the benchmark list
 class spreadSheetReader:
 
-    def read_spreadsheet_id(self):
+    def read_spreadsheet_id(self, link):
         # Read the Spreadsheet ID from the spreadsheetid.txt file
-        try:
-            assert os.path.exists('spreadsheetlink.txt'), "Could not find spreadsheetlink.txt\n Error raised at " + \
+        try:  # Check that the link to the spreadsheet is not empty
+            assert link != "", "Could not find spreadsheetlink.txt\n Error raised at " + \
                                                         datetime.now().strftime("%H:%M:%S")
-            f = open("spreadsheetlink.txt", "r")
-            idinput = f.read()
-            f.close()
-            bench_spreadsheet_id = idinput[idinput.find("/d/") + 3:idinput.find("/edit")]  # Extract the id from the
+            bench_spreadsheet_id = link[link.find("/d/") + 3:link.find("/edit")]  # Extract the id from the
             return bench_spreadsheet_id                                                    # full link
         except AssertionError:
             f = open("error.txt", "w")
             f.write(
-                "Could not find the spreadsheetlink.txt, make sure you place it into the same directory as your .exe")
+                "You did not input a 'link_to_sheet' in your config file, make sure to input your values into the "
+                "config.json.")
             f.close()
             sys.exit()
 
