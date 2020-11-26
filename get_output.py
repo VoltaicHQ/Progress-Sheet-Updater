@@ -14,9 +14,12 @@ class consoleOutput:
             if float(score[0]) != 0.0:
                 average = average + float(score[0])
                 count += 1
-        average = average / count
-        average = round(average, 1)
-        return average
+        if count != 0:
+            average = average / count
+            average = round(average, 1)
+            return average
+        else:
+            return 0.0
 
     # Create console output, vary depending on if a benchmark was played and if a highscore was found
     def create_output(self, highscore_found, benchmark_names, changed_bench_index, current, bench_played, averages):
