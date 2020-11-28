@@ -1,8 +1,8 @@
 from colorama import Fore
 from datetime import datetime
+import os
 
-
-# This class handles creating the GoogleAPI Service and fetching the benchmark list
+# This class handles console output
 class consoleOutput:
     # Method to get the average from the averages list
     def get_average(self, averages, changed_bench_index):
@@ -53,3 +53,5 @@ class consoleOutput:
         print(Fore.RED + "[Ctrl+C]")
         print(Fore.RESET + "If you have questions try reading the Readme")
 
+    def cls():
+        os.system('cls' if os.name == 'nt' else 'clear')

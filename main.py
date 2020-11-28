@@ -1,444 +1,131 @@
-from get_spreadsheet import *
-from get_output import *
+from get_spreadsheet import spreadSheetReader
+from get_output import consoleOutput
+import sys
 import os
 import time
 import json
+import re
+import csv
 
-# Global Variables
-average_pointers = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-# Points to the index where the new score will be added in average tab
-INTERMEDIATE_SCORE_RANGE = 'Intermediate Requirements!G3:G20'
-ADVANCED_SCORE_RANGE = 'Advanced Requirements!G3:G20'
-INTERMEDIATE_AVERAGE_RANGE = 'Intermediate Requirements!M3:M20'
-ADVANCED_AVERAGE_RANGE = 'Advanced Requirements!M3:M20'
-INTERMEDIATE_NAME_RANGE = 'Intermediate Requirements!E3:E20'
-ADVANCED_NAME_RANGE = 'Advanced Requirements!E3:E20'
-# Get the settings in config.json
-configfile = open("config.json", "r")
-configs = json.load(configfile)
+CONFIG = json.load(open("config.json", "r"))
+SHEET_API = spreadSheetReader.create_service().spreadsheets()
+SHEET_ID = spreadSheetReader.read_spreadsheet_id(CONFIG['link_to_sheet'])
 
-# Get the variables from the config.json
-path_to_stats = configs["path_to_stats"]
-try:  # Check if path exists, error if it does not
-    assert os.path.exists(path_to_stats)
-except AssertionError:
-    f = open("error.txt", "w")
-    f.write(
-        "Could not find the path you specified, make sure you input the correct one")
-    f.close()
-    sys.exit()
+def check_stats_path(path):
+    try:  # Check if path exists, error if it does not
+        assert os.path.exists(path)
+    except AssertionError:
+        f = open("error.txt", "w")
+        f.write(
+            "Could not find the path you specified, make sure you input the correct one")
+        f.close()
+        sys.exit()
 
-link_to_sheet = configs["link_to_sheet"]
-update_sheet_on_startup = configs["update_sheet_on_startup"]
-calculate_averages = configs["calculate_averages"]
-num_of_runs_to_average = configs["num_of_runs_to_average"]
+def read_score(file_path):
+    with open(file_path, newline='') as csvfile:
+        for row in csv.reader(csvfile):
+            if row and row[0] == 'Score:':
+                return row[1]
+    return '0'
 
-# Objects from the imported classes
-sr = spreadSheetReader
-op = consoleOutput
-
-
-# Functions
-# Function to clear console window
-def cls():
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-
-# Function to move the pointer of the played benchmark
-def movepointer(index_played_bench):
-    oldpointer = average_pointers[index_played_bench]  # Backup old pointer position to return later
-    currentpointer = average_pointers[index_played_bench]
-    if currentpointer != num_of_runs_to_average - 1:  # If the pointer is not on the last column, move to one column ahead
-        currentpointer = currentpointer + 1
-    elif currentpointer == num_of_runs_to_average - 1:  # If pointer is on the last column, go back to first column
-        currentpointer = 0
-    average_pointers[index_played_bench] = currentpointer  # Update pointer in array
-    return oldpointer
-
-
-# Create GoogleAPI Service
-BENCH_SPREADSHEET_ID = sr.read_spreadsheet_id(sr, link_to_sheet)
-sr.check_spreadsheet_id(sr, BENCH_SPREADSHEET_ID)
-service = sr.create_service(sr)
-sheet = service.spreadsheets()
-
-# Create a List of all files in the stats folder
-all_files = os.listdir(path_to_stats)
-
-# Create a list with all Benchmarknames
-result_names_intermediate = sheet.values().get(spreadsheetId=BENCH_SPREADSHEET_ID,
-                                               range=INTERMEDIATE_NAME_RANGE).execute()
-result_names_advanced = sheet.values().get(spreadsheetId=BENCH_SPREADSHEET_ID,
-                                           range=ADVANCED_NAME_RANGE).execute()
-names_intermediate = []
-names_intermediate = result_names_intermediate.get("values", [])
-names_advanced = result_names_advanced.get("values", [])
-
-benchmark_names = names_intermediate + names_advanced
-del benchmark_names[21:24]
-
-i = 0
-while i < len(benchmark_names):
-    benchmark_names[i] = benchmark_names[i][0].strip()
-    i += 1
-# Initialize both lists for highscores and connection to benchmark part of sheet
-
-result_highscores_intermediate = sheet.values().get(spreadsheetId=BENCH_SPREADSHEET_ID,
-                                                    range=INTERMEDIATE_SCORE_RANGE).execute()
-result_highscores_advanced = sheet.values().get(spreadsheetId=BENCH_SPREADSHEET_ID,
-                                                range=ADVANCED_SCORE_RANGE).execute()
-highscores_intermediate = result_highscores_intermediate.get("values", [])
-highscores_advanced = result_highscores_advanced.get("values", [])
-# Change values in the lists inside the highscores to float, or sheets will weird out, also insert 0 into empty columns
-while len(highscores_intermediate) < 18:
-    highscores_intermediate.append([0])
-
-while len(highscores_advanced) < 18:
-    highscores_advanced.append([0])
-
-for score in highscores_intermediate:
-    if not score:
-        score.insert(0, "0")
-    score[0] = float(score[0])
-
-for score in highscores_advanced:
-    if not score:
-        score.insert(0, "0")
-    score[0] = float(score[0])
-
-#  Create a list with all scores, then remove the ones that are duplicats
-highscores = highscores_intermediate + highscores_advanced
-del highscores[21:24]
-
-if update_sheet_on_startup:
-    for statfile in all_files:
-        entryname = statfile[0:statfile.find(" - Challenge - ")]  # Extract Name of Bench from the filename
-        for bench in benchmark_names:  # Compare names of scens that were last played to the Benchmark names
-            if bench.lower() == entryname.lower():  # If a benchmark scenario was recently played
-                index_bench = benchmark_names.index(bench)
-                benchmark_score = float(highscores[index_bench][0])
-                f = open(path_to_stats + "\\" + statfile, "r")  # Open file and read the Score achieved in it
-                content = f.read()
-                f.close()
-                seperatedlines = content.splitlines()
-                for line in seperatedlines:
-                    if line.find("Score") != -1:
-                        current = float(line[7:])
-                        current = round(current, 1)
-                if current > benchmark_score:  # If a new highscore was found
-                    highscores[index_bench] = [current]
-
-    values_intermediate = [
-        highscores[0],
-        highscores[1],
-        highscores[2],
-        highscores[3],
-        highscores[4],
-        highscores[5],
-        highscores[6],
-        highscores[7],
-        highscores[8],
-        highscores[9],
-        highscores[10],
-        highscores[11],
-        highscores[12],
-        highscores[13],
-        highscores[14],
-        highscores[15],
-        highscores[16],
-        highscores[17],
-    ]
-    body_intermediate = {
-        'values': values_intermediate
-    }
-
-    values_advanced = [
-        highscores[18],
-        highscores[19],
-        highscores[20],
-        highscores[3],
-        highscores[4],
-        highscores[5],
-        highscores[22],
-        highscores[23],
-        highscores[23],
-        highscores[24],
-        highscores[25],
-        highscores[26],
-        highscores[27],
-        highscores[28],
-        highscores[29],
-        highscores[30],
-        highscores[31],
-        highscores[32],
-    ]
-    body_advanced = {
-        'values': values_advanced
-    }
-    result = service.spreadsheets().values().update(
-        spreadsheetId=BENCH_SPREADSHEET_ID, range=ADVANCED_SCORE_RANGE,
-        valueInputOption="RAW", body=body_advanced).execute()  # Send request to API, update benchmark tab
-
-    result = service.spreadsheets().values().update(
-        spreadsheetId=BENCH_SPREADSHEET_ID, range=INTERMEDIATE_SCORE_RANGE,
-        valueInputOption="RAW", body=body_intermediate).execute()  # Send request to API, update benchmark tab
-
-if calculate_averages:
-    averages = []
-    for i in range(34):
-        averages.insert(i, [])
-
-    calculated_averages = []
-    for bench in benchmark_names:
-        templist = []
-        for statfile in all_files:
-            scenname = statfile[0:statfile.find(" - Challenge - ")]
-            if scenname.lower() == bench.lower():
-                templist.append(os.path.join(path_to_stats, statfile))
-        if len(templist) != 0:
-            i = 0
-            while i < num_of_runs_to_average and len(templist) != 0:
-                latest_file = max(templist, key=os.path.getctime)
-                f = open(latest_file, "r")  # Open file and read the Score achieved in it
-                content = f.read()
-                f.close()
-                seperatedlines = content.splitlines()
-                for line in seperatedlines:
-                    if line.find("Score") != -1:
-                        current = float(line[7:])
-                        current = round(current, 1)
-                        break
-                averages[benchmark_names.index(bench)].insert(i, [current])
-                i += 1
-                templist.remove(latest_file)
-            #  Fill not full averagelists with 0, also set the pointer to the first zero that was added
-            while len(averages[benchmark_names.index(bench)]) < num_of_runs_to_average:
-                average_pointers[benchmark_names.index(bench)] = i + 1
-                averages[benchmark_names.index(bench)].append([0.0])
-
+def cells_from_sheet_ranges(ranges):
+    valid_range = re.compile(r'(?P<sheet>.+)!(?P<row1>[A-Z]+)(?P<col1>\d+)(:(?P<row2>[A-Z]+)(?P<col2>\d+))?')
+    for r in ranges:
+        if (m := valid_range.match(r)) and m.group('row1') == m.group('row2'):
+            if m.group('col2'):
+                for i in range(int(m.group('col1')), int(m.group('col2')) + 1):
+                    yield f'{m.group("sheet")}!{m.group("row1")}{i}'
+            else:
+                yield r
         else:
-            for i in range(num_of_runs_to_average):
-                averages[benchmark_names.index(bench)].insert(i, [0.0])
-    i = 0
-    for average_list in averages:
-        calculated_averages.insert(i, [op.get_average(op, averages, i)])
-        i += 1
+            print("Invalid sheet range:")
+            print(r)
 
-if update_sheet_on_startup:
-    valuesavg = [
-        calculated_averages[0],
-        calculated_averages[1],
-        calculated_averages[2],
-        calculated_averages[3],
-        calculated_averages[4],
-        calculated_averages[5],
-        calculated_averages[6],
-        calculated_averages[7],
-        calculated_averages[8],
-        calculated_averages[9],
-        calculated_averages[10],
-        calculated_averages[11],
-        calculated_averages[12],
-        calculated_averages[13],
-        calculated_averages[14],
-        calculated_averages[15],
-        calculated_averages[16],
-        calculated_averages[17],
-    ]
-    bodyavg = {
-        'values': valuesavg
-    }
-    # Send request to API, update the average tab
-    result = service.spreadsheets().values().update(spreadsheetId=BENCH_SPREADSHEET_ID,
-                                                    range=INTERMEDIATE_AVERAGE_RANGE,
-                                                    valueInputOption="RAW",
-                                                    body=bodyavg).execute()
+def read_sheet_range(sheet_range):
+    response = (SHEET_API.values()
+                         .get(spreadsheetId=SHEET_ID, range=sheet_range)
+                         .execute()
+                         .get('values', [['0']]))
+    flat = [val.strip() for row in response for val in row]
+    return flat
 
-    values = [
-    calculated_averages[18],
-    calculated_averages[19],
-    calculated_averages[20],
-    calculated_averages[3],
-    calculated_averages[4],
-    calculated_averages[5],
-    calculated_averages[21],
-    calculated_averages[22],
-    calculated_averages[23],
-    calculated_averages[24],
-    calculated_averages[25],
-    calculated_averages[26],
-    calculated_averages[27],
-    calculated_averages[28],
-    calculated_averages[29],
-    calculated_averages[30],
-    calculated_averages[31],
-    calculated_averages[32],
-    ]
-    body = {
-        'values': values
-    }
-    # Send request to API, update benchmark tab
-    result = service.spreadsheets().values().update(
-        spreadsheetId=BENCH_SPREADSHEET_ID, range=ADVANCED_AVERAGE_RANGE,
-        valueInputOption="RAW", body=body).execute()
+def init_scenario_data():
+    hs_cells_iter = cells_from_sheet_ranges(CONFIG['highscore_ranges'])
+    avg_cells_iter = cells_from_sheet_ranges(CONFIG['average_ranges'])
+    scens= {}
 
-# Run a while that stops on Ctrl+C press
-try:
-    while True:
-        changed_bench_index = None
-        current = None
-        found = False  # Boolean False to check if a new highscore was found
-        bench_played = False  # Boolean False to check if a bench was played
-        all_files_updated = os.listdir(path_to_stats)
-        # Create a list (new_entries) of all files that were created since the last time the loop ran
-        s = set(all_files)
-        new_entries = [x for x in all_files_updated if x not in s]
-        for entry in new_entries:
-            entryname = entry[0:entry.find(" - Challenge - ")]  # Extract Name of Bench from the filename
-            for bench in benchmark_names:  # Compare names of scens that were last played to the Benchmark names
-                index_bench = benchmark_names.index(bench)
-                benchmark_score = float(highscores[index_bench][0])
-                if bench.lower() == entryname.lower():  # If a benchmark scenario was recently played
-                    changed_bench_index = index_bench
-                    bench_played = True
-                    f = open(path_to_stats + "\\" + entry, "r")  # Open file and read the Score achieved in it
-                    content = f.read()
-                    f.close()
-                    seperatedlines = content.splitlines()
-                    for line in seperatedlines:
-                        if line.find("Score") != -1:
-                            current = float(line[7:])
-                            current = round(current, 1)
-                            pointerposition = movepointer(index_bench)
-                            if calculate_averages:
-                                averages[index_bench][pointerposition] = [current]
-                            if current > benchmark_score:  # If new Score > Highscore
-                                highscores[benchmark_names.index(bench)][0] = current  # Update highscore of the bench
-                                found = True
-                                break
-
-        if bench_played and calculate_averages:  # If a Bench was played update the average tab on the Googlesheet
-            calculated_averages[changed_bench_index] = [op.get_average(op, averages, changed_bench_index)]
-            if changed_bench_index < 17:  # If the changed score is on the intermediate tab
-
-                valuesavg = [
-                    calculated_averages[0],
-                    calculated_averages[1],
-                    calculated_averages[2],
-                    calculated_averages[3],
-                    calculated_averages[4],
-                    calculated_averages[5],
-                    calculated_averages[6],
-                    calculated_averages[7],
-                    calculated_averages[8],
-                    calculated_averages[9],
-                    calculated_averages[10],
-                    calculated_averages[11],
-                    calculated_averages[12],
-                    calculated_averages[13],
-                    calculated_averages[14],
-                    calculated_averages[15],
-                    calculated_averages[16],
-                    calculated_averages[17],
-                ]
-                bodyavg = {
-                    'values': valuesavg
+    for r in CONFIG['scenario_name_ranges']:
+        for s in read_sheet_range(r):
+            if s not in scens:
+                scens[s] = {
+                    'hs_cells': [],
+                    'avg_cells': [],
+                    'hs': 0,
+                    'avgs': [],
+                    'hs_updated': False,
+                    'avg_updated': False,
                 }
-                # Send request to API, update the average tab
-                result = service.spreadsheets().values().update(spreadsheetId=BENCH_SPREADSHEET_ID,
-                                                                range=INTERMEDIATE_AVERAGE_RANGE,
-                                                                valueInputOption="RAW",
-                                                                body=bodyavg).execute()
-            if changed_bench_index > 17 or changed_bench_index == 3 or changed_bench_index == 4 or changed_bench_index == 5:
-                values = [
-                    calculated_averages[18],
-                    calculated_averages[19],
-                    calculated_averages[20],
-                    calculated_averages[3],
-                    calculated_averages[4],
-                    calculated_averages[5],
-                    calculated_averages[21],
-                    calculated_averages[22],
-                    calculated_averages[23],
-                    calculated_averages[24],
-                    calculated_averages[25],
-                    calculated_averages[26],
-                    calculated_averages[27],
-                    calculated_averages[28],
-                    calculated_averages[29],
-                    calculated_averages[30],
-                    calculated_averages[31],
-                    calculated_averages[32],
-                    ]
-                body = {
-                    'values': values
-                }
-                # Send request to API, update benchmark tab
-                result = service.spreadsheets().values().update(
-                    spreadsheetId=BENCH_SPREADSHEET_ID, range=ADVANCED_AVERAGE_RANGE,
-                    valueInputOption="RAW", body=body).execute()
 
-        if found:  # If a new Highscore was found update the value on the Google Sheet
-            if changed_bench_index < 17:  # If the changed score is on the intermediate tab
-                values = [
-                    highscores[0],
-                    highscores[1],
-                    highscores[2],
-                    highscores[3],
-                    highscores[4],
-                    highscores[5],
-                    highscores[6],
-                    highscores[7],
-                    highscores[8],
-                    highscores[9],
-                    highscores[10],
-                    highscores[11],
-                    highscores[12],
-                    highscores[13],
-                    highscores[14],
-                    highscores[15],
-                    highscores[16],
-                    highscores[17],
-                ]
-                body = {
-                    'values': values
-                }
-                result = service.spreadsheets().values().update(
-                    spreadsheetId=BENCH_SPREADSHEET_ID, range=INTERMEDIATE_SCORE_RANGE,
-                    valueInputOption="RAW", body=body).execute()  # Send request to API, update benchmark tab
+            scens[s]['hs_cells'].append(next(hs_cells_iter))
+            scens[s]['avg_cells'].append(next(avg_cells_iter))
 
-            if changed_bench_index > 17 or changed_bench_index == 3 or changed_bench_index == 4 or changed_bench_index == 5:
-                values = [
-                    highscores[18],
-                    highscores[19],
-                    highscores[20],
-                    highscores[3],
-                    highscores[4],
-                    highscores[5],
-                    highscores[22],
-                    highscores[23],
-                    highscores[23],
-                    highscores[24],
-                    highscores[25],
-                    highscores[26],
-                    highscores[27],
-                    highscores[28],
-                    highscores[29],
-                    highscores[30],
-                    highscores[31],
-                    highscores[32],
-                    ]
-                body = {
-                    'values': values
-                }
-                result = service.spreadsheets().values().update(
-                    spreadsheetId=BENCH_SPREADSHEET_ID, range=ADVANCED_SCORE_RANGE,
-                    valueInputOption="RAW", body=body).execute()  # Send request to API, update benchmark tab
+    for s in scens:
+        for cell in scens[s]['hs_cells']:
+            scens[s]['hs'] = max(scens[s]['hs'], float(read_sheet_range(cell)[0]))
 
-        cls()
-        op.create_output(op, found, benchmark_names, changed_bench_index, current, bench_played, averages)
-        all_files = all_files_updated  # Update the value of allfiles, so that you dont compare the same new scores
-        time.sleep(60)  # Wait 60 Seconds until next check
-except KeyboardInterrupt:
-    print("Exiting...")
-    pass
+    return scens
+
+def update_scenario_data(scens, file_names):
+    for f in file_names:
+        s = f[0:f.find(" - Challenge - ")]
+        if s in scens:
+            score = round(float(read_score(f'{CONFIG["path_to_stats"]}/{f}')), 1)
+            scen = scens[s]
+            if score > scen['hs']:
+                scen['hs'] = score
+                scen['hs_updated'] = True
+
+            if CONFIG['calculate_averages']:
+                scen['avgs'].append(score) # Will be last N runs if files are sorted
+                if len(scen['avgs']) > CONFIG['num_of_runs_to_average']:
+                    scen['avgs'].pop(0)
+                scen['avg_updated'] = True
+
+def update_sheet(scens):
+    for s in scens:
+        if scens[s]['hs_updated']:
+            for cell in scens[s]['hs_cells']:
+                SHEET_API.values().update(spreadsheetId=SHEET_ID,
+                                          range=cell,
+                                          valueInputOption='RAW',
+                                          body={'values': [[scens[s]['hs']]]}).execute()
+                print(f'Updated Highscore: {s} -- {scens[s]["hs"]}')
+            scens[s]['hs_updated'] = False
+        if scens[s]['avg_updated']:
+            avg = round(sum(scens[s]['avgs']) / len(scens[s]['avgs']), 1)
+            for cell in scens[s]['avg_cells']:
+                SHEET_API.values().update(spreadsheetId=SHEET_ID,
+                                          range=cell,
+                                          valueInputOption='RAW',
+                                          body={'values': [[avg]]}).execute()
+                print(f'Updated Average: {s} -- {avg}')
+            scens[s]['avg_updated'] = False
+
+
+scenarios = init_scenario_data()
+
+check_stats_path(CONFIG['path_to_stats'])
+all_files = [f.lower() for f in list(os.listdir(CONFIG['path_to_stats']))]
+all_files.sort()
+
+if CONFIG['update_sheet_on_startup']:
+    update_scenario_data(scenarios, all_files)
+    update_sheet(scenarios)
+
+while True:
+    all_files_updated = os.listdir(CONFIG['path_to_stats'])
+    new_files = [file for file in all_files_updated if file not in all_files]
+    update_scenario_data(scenarios, new_files)
+    update_sheet(scenarios)
+    all_files = all_files_updated
+    time.sleep(CONFIG['polling_interval'])
