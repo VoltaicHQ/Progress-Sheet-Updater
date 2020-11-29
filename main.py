@@ -6,10 +6,12 @@ import time
 import json
 import re
 import csv
+from googleapiclient.errors import HttpError
 
 CONFIG = json.load(open("config.json", "r"))
 SHEET_API = spreadSheetReader.create_service().spreadsheets()
 SHEET_ID = spreadSheetReader.read_spreadsheet_id(CONFIG['link_to_sheet'])
+
 
 def check_stats_path(path):
     try:  # Check if path exists, error if it does not
@@ -19,7 +21,10 @@ def check_stats_path(path):
         f.write(
             "Could not find the path you specified, make sure you input the correct one")
         f.close()
+        print("Could not find the path you specified, make sure you input the correct one.")
+        input("Press 'Enter' to exit")
         sys.exit()
+
 
 def read_score(file_path):
     with open(file_path, newline='') as csvfile:
@@ -27,6 +32,7 @@ def read_score(file_path):
             if row and row[0] == 'Score:':
                 return row[1]
     return '0'
+
 
 def cells_from_sheet_ranges(ranges):
     valid_range = re.compile(r'(?P<sheet>.+)!(?P<row1>[A-Z]+)(?P<col1>\d+)(:(?P<row2>[A-Z]+)(?P<col2>\d+))?')
@@ -38,21 +44,43 @@ def cells_from_sheet_ranges(ranges):
             else:
                 yield r
         else:
+            f = open("error.txt", "w")
+            f.write(
+                "Invalid sheet range: " + r
+                + "\nIf you are not sure what this means, try looking into the readme.")
+            f.close()
             print("Invalid sheet range:")
             print(r)
+            print("If you are not sure what this means, try looking into the readme.")
+            input("Press 'Enter' to exit")
+            sys.exit()
+
 
 def read_sheet_range(sheet_range):
-    response = (SHEET_API.values()
-                         .get(spreadsheetId=SHEET_ID, range=sheet_range)
-                         .execute()
-                         .get('values', [['0']]))
-    flat = [val.strip() for row in response for val in row]
-    return flat
+    try:
+        response = (SHEET_API.values()
+                             .get(spreadsheetId=SHEET_ID, range=sheet_range)
+                             .execute()
+                             .get('values', [['0']]))
+        flat = [val.strip() for row in response for val in row]
+        return flat
+    except HttpError as error:
+        f = open("error.txt", "w")
+        f.write(
+            "Sheets API: " + error._get_reason()
+            + "\nIf you are not sure what this means, try looking into the readme."
+        )
+        f.close()
+        print("Sheets API: " + error._get_reason()
+              + "\nIf you are not sure what this means, try looking into the readme.")
+        input("Press 'Enter' to exit")
+        sys.exit()
+
 
 def init_scenario_data():
     hs_cells_iter = cells_from_sheet_ranges(CONFIG['highscore_ranges'])
     avg_cells_iter = cells_from_sheet_ranges(CONFIG['average_ranges'])
-    scens= {}
+    scens = {}
 
     for r in CONFIG['scenario_name_ranges']:
         for s in read_sheet_range(r):
@@ -75,6 +103,7 @@ def init_scenario_data():
 
     return scens
 
+
 def update_scenario_data(scens, file_names):
     for f in file_names:
         s = f[0:f.find(" - Challenge - ")]
@@ -91,25 +120,36 @@ def update_scenario_data(scens, file_names):
                     scen['avgs'].pop(0)
                 scen['avg_updated'] = True
 
+
 def update_sheet(scens):
-    for s in scens:
-        if scens[s]['hs_updated']:
-            for cell in scens[s]['hs_cells']:
-                SHEET_API.values().update(spreadsheetId=SHEET_ID,
-                                          range=cell,
-                                          valueInputOption='RAW',
-                                          body={'values': [[scens[s]['hs']]]}).execute()
-                print(f'Updated Highscore: {s} -- {scens[s]["hs"]}')
-            scens[s]['hs_updated'] = False
-        if scens[s]['avg_updated']:
-            avg = round(sum(scens[s]['avgs']) / len(scens[s]['avgs']), 1)
-            for cell in scens[s]['avg_cells']:
-                SHEET_API.values().update(spreadsheetId=SHEET_ID,
-                                          range=cell,
-                                          valueInputOption='RAW',
-                                          body={'values': [[avg]]}).execute()
-                print(f'Updated Average: {s} -- {avg}')
-            scens[s]['avg_updated'] = False
+    try:
+        for s in scens:
+            if scens[s]['hs_updated']:
+                for cell in scens[s]['hs_cells']:
+                    SHEET_API.values().update(spreadsheetId=SHEET_ID,
+                                              range=cell,
+                                              valueInputOption='RAW',
+                                              body={'values': [[scens[s]['hs']]]}).execute()
+                scens[s]['hs_updated'] = False
+            if scens[s]['avg_updated']:
+                avg = round(sum(scens[s]['avgs']) / len(scens[s]['avgs']), 1)
+                for cell in scens[s]['avg_cells']:
+                    SHEET_API.values().update(spreadsheetId=SHEET_ID,
+                                              range=cell,
+                                              valueInputOption='RAW',
+                                              body={'values': [[avg]]}).execute()
+                scens[s]['avg_updated'] = False
+    except HttpError as error:
+        f = open("error.txt", "w")
+        f.write(
+            "Sheets API: " + error._get_reason()
+            + "\nIf you are not sure what this means, try looking into the readme."
+        )
+        f.close()
+        print("Sheets API: " + error._get_reason()
+              + "\nIf you are not sure what this means, try looking into the readme.")
+        input("Press 'Enter' to exit")
+        sys.exit()
 
 
 scenarios = init_scenario_data()
@@ -126,6 +166,7 @@ while True:
     all_files_updated = os.listdir(CONFIG['path_to_stats'])
     new_files = [file for file in all_files_updated if file not in all_files]
     update_scenario_data(scenarios, new_files)
+    consoleOutput.create_output(consoleOutput, scenarios)
     update_sheet(scenarios)
     all_files = all_files_updated
     time.sleep(CONFIG['polling_interval'])

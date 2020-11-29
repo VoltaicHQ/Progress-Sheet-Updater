@@ -4,54 +4,41 @@ import os
 
 # This class handles console output
 class consoleOutput:
-    # Method to get the average from the averages list
-    def get_average(self, averages, changed_bench_index):
-        # Calculate the average of the changed benchmark
-        average = 0.0
-        count = 0
-        #  Since some scores might be empty we only count the ones that are not
-        for score in averages[changed_bench_index]:
-            if float(score[0]) != 0.0:
-                average = average + float(score[0])
-                count += 1
-        if count != 0:
-            average = average / count
-            average = round(average, 1)
-            return average
-        else:
-            return 0.0
 
-    # Create console output, vary depending on if a benchmark was played and if a highscore was found
-    def create_output(self, highscore_found, benchmark_names, changed_bench_index, current, bench_played, averages):
+    def cls(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+    # Create console output, varies depending on if a benchmark was played and if a highscore was found
+    def create_output(self, scens):
+        hs_found = False
+        avg_found = False
+        self.cls(self)
         print("Progress Sheet Updater made by", end=" ")
-        print(Fore.LIGHTGREEN_EX + "Yondaime")
+        print(Fore.LIGHTGREEN_EX + "Yondaime & Knar")
         print(Fore.RESET + "Last update was at:", end=" ")
         print(Fore.BLUE + "{}".format(datetime.now().strftime("%H:%M:%S")))
         print(Fore.RESET + "The Highscore of", end=" ")
-        if highscore_found:
-            print(Fore.BLUE + benchmark_names[changed_bench_index], end=" ")
-        else:
+        for s in scens:
+            if scens[s]['hs_updated']:
+                print(Fore.BLUE + str(s), end=" ")
+                print(Fore.RESET + "got updated")
+                print("Highscore is now", end=" ")
+                print(Fore.BLUE + str(scens[s]['hs']))
+                hs_found = True
+        if not hs_found:
             print(Fore.BLUE + "no benchmark", end=" ")
-        print(Fore.RESET + "was updated")
-        print(Fore.RESET + "Highscore is now", end=" ")
-        if highscore_found:
-            print(Fore.BLUE + str(current))
-        else:
-            print(Fore.BLUE + "the same")
+            print(Fore.RESET + "got updated")
         print(Fore.RESET + "The Average of", end=" ")
-        if bench_played:
-            print(Fore.BLUE + benchmark_names[changed_bench_index], end=" ")
-        else:
+        for s in scens:
+            if scens[s]['avg_updated']:
+                print(Fore.BLUE + str(s), end=" ")
+                print(Fore.RESET + "was updated")
+                print(Fore.RESET + "Average is now", end=" ")
+                print(Fore.BLUE + str(round(sum(scens[s]['avgs']) / len(scens[s]['avgs']), 1)))
+                avg_found = True
+        if not avg_found:
             print(Fore.BLUE + "no benchmark", end=" ")
-        print(Fore.RESET + "was updated")
-        print(Fore.RESET + "Average is now", end=" ")
-        if bench_played:  # If a bench was played the average could change
-            print(Fore.BLUE + str(self.get_average(self, averages, changed_bench_index)))
-        else:
+            print(Fore.RESET + "was updated")
+            print(Fore.RESET + "Average is still", end=" ")
             print(Fore.BLUE + "the same")
-        print(Fore.RESET + "To stop the program press", end=" ")
-        print(Fore.RED + "[Ctrl+C]")
         print(Fore.RESET + "If you have questions try reading the Readme")
-
-    def cls():
-        os.system('cls' if os.name == 'nt' else 'clear')
