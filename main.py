@@ -66,7 +66,7 @@ def read_sheet_range(sheet_range):
         flat = [val.strip() for row in response for val in row]
         return flat
     except HttpError as error:
-        handle_error(error=error)
+        handle_error("api", error=error)
 
 
 def init_scenario_data():
@@ -132,7 +132,7 @@ def update_sheet(scens):
                                               body={'values': [[avg]]}).execute()
                 scens[s]['avg_updated'] = False
     except HttpError as error:
-        handle_error(error=error)
+        handle_error("api", error=error)
 
 
 scenarios = init_scenario_data()

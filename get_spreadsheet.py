@@ -1,5 +1,4 @@
 import os.path
-from datetime import datetime
 import pickle
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -13,27 +12,18 @@ class spreadSheetReader:
     def read_spreadsheet_id(link):
         # Read the Spreadsheet ID from the spreadsheetid.txt file
         try:  # Check that the link to the spreadsheet is not empty
-            assert link != "", "Could not find spreadsheetlink.txt\n Error raised at " + \
-                                                        datetime.now().strftime("%H:%M:%S")
+            assert link != ""
             bench_spreadsheet_id = link[link.find("/d/") + 3:link.find("/edit")]  # Extract the id from the
-            return bench_spreadsheet_id                                                    # full link
+            return bench_spreadsheet_id  # full link
         except AssertionError:
             f = open("error.txt", "w")
             f.write(
                 "You did not input a 'link_to_sheet' in your config file, make sure to input your values into the "
                 "config.json.")
             f.close()
-            sys.exit()
-
-    def check_spreadsheet_id(sheet_id):
-        try:
-            assert sheet_id != ""
-        except AssertionError:
-            f = open("error.txt", "w")
-            f.write(
-                "Your spreadsheetlink.txt file seems to be empty, make sure you save the file after pasting the "
-                "spreadsheet link. ALso check if your link has the correct format")
-            f.close()
+            print("You did not input a 'link_to_sheet' in your config file, make sure to input your values into the "
+                  "config.json.")
+            input("Press 'Enter' to exit")
             sys.exit()
 
     def create_service():
@@ -45,6 +35,9 @@ class spreadSheetReader:
                 "Your credentials.json file seems to not be in the right directory, make sure you move it into "
                 "the folder that has the rest of the files.")
             f.close()
+            print("Your credentials.json file seems to not be in the right directory, make sure you move it into "
+                  "the folder that contains the rest of the files.")
+            input("Press 'Enter' to exit")
             sys.exit()
         # Set scopes for the GoogleAPI, if modifying these scopes, delete the file token.pickle.
         scopes = ['https://www.googleapis.com/auth/spreadsheets']
