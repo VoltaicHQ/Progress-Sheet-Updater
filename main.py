@@ -21,6 +21,8 @@ def handle_error(error_type, error=None, r=" "):
             message = "Could not find the path you specified, make sure you input the correct one"
         elif error_type == "range":
             message = "Invalid sheet range: " + r
+        elif error_type == "range_too_small":
+            message = "Range size mismatched, check that each list of ranges has the same number of cells referenced."
     f = open("error.txt", "w")
     f.write(message + "\nIf you are not sure what this means, try looking into the readme.")
     f.close()
@@ -74,6 +76,7 @@ def init_scenario_data():
     avg_cells_iter = cells_from_sheet_ranges(CONFIG['average_ranges'])
     scens = {}
 
+    i = 0
     for r in CONFIG['scenario_name_ranges']:
         for s in read_sheet_range(r):
             if s not in scens:
@@ -84,14 +87,23 @@ def init_scenario_data():
                     'avgs': [],
                     'hs_updated': False,
                     'avg_updated': False,
+                    'ids': []
                 }
 
             scens[s]['hs_cells'].append(next(hs_cells_iter))
             scens[s]['avg_cells'].append(next(avg_cells_iter))
+            scens[s]['ids'].append(i)
+
+    highscores = []
+    for r in CONFIG['highscore_ranges']:
+        highscores += map(lambda x: float(x), read_sheet_range(r))
+
+    if len(highscores) < len(scens):
+        handle_error('range_too_small')
 
     for s in scens:
-        for cell in scens[s]['hs_cells']:
-            scens[s]['hs'] = max(scens[s]['hs'], float(read_sheet_range(cell)[0]))
+        for i in scens[s]['ids']:
+            scens[s]['hs'] = max(scens[s]['hs'], highscores[i])
 
     return scens
 
