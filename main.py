@@ -13,17 +13,27 @@ SHEET_API = spreadSheetReader.create_service().spreadsheets()
 SHEET_ID = spreadSheetReader.read_spreadsheet_id(CONFIG['link_to_sheet'])
 
 
+def handle_error(error_type, error=None, r=" "):
+    if error:
+        message = "Sheets API: " + error._get_reason()
+    else:
+        if error_type == "path":
+            message = "Could not find the path you specified, make sure you input the correct one"
+        elif error_type == "range":
+            message = "Invalid sheet range: " + r
+    f = open("error.txt", "w")
+    f.write(message + "\nIf you are not sure what this means, try looking into the readme.")
+    f.close()
+    print(message)
+    input("Press 'Enter' to exit")
+    sys.exit()
+
+
 def check_stats_path(path):
     try:  # Check if path exists, error if it does not
         assert os.path.exists(path)
     except AssertionError:
-        f = open("error.txt", "w")
-        f.write(
-            "Could not find the path you specified, make sure you input the correct one")
-        f.close()
-        print("Could not find the path you specified, make sure you input the correct one.")
-        input("Press 'Enter' to exit")
-        sys.exit()
+        handle_error("path")
 
 
 def read_score(file_path):
@@ -44,16 +54,7 @@ def cells_from_sheet_ranges(ranges):
             else:
                 yield r
         else:
-            f = open("error.txt", "w")
-            f.write(
-                "Invalid sheet range: " + r
-                + "\nIf you are not sure what this means, try looking into the readme.")
-            f.close()
-            print("Invalid sheet range:")
-            print(r)
-            print("If you are not sure what this means, try looking into the readme.")
-            input("Press 'Enter' to exit")
-            sys.exit()
+            handle_error("range", range=r)
 
 
 def read_sheet_range(sheet_range):
@@ -65,16 +66,7 @@ def read_sheet_range(sheet_range):
         flat = [val.strip() for row in response for val in row]
         return flat
     except HttpError as error:
-        f = open("error.txt", "w")
-        f.write(
-            "Sheets API: " + error._get_reason()
-            + "\nIf you are not sure what this means, try looking into the readme."
-        )
-        f.close()
-        print("Sheets API: " + error._get_reason()
-              + "\nIf you are not sure what this means, try looking into the readme.")
-        input("Press 'Enter' to exit")
-        sys.exit()
+        handle_error(error=error)
 
 
 def init_scenario_data():
@@ -140,16 +132,7 @@ def update_sheet(scens):
                                               body={'values': [[avg]]}).execute()
                 scens[s]['avg_updated'] = False
     except HttpError as error:
-        f = open("error.txt", "w")
-        f.write(
-            "Sheets API: " + error._get_reason()
-            + "\nIf you are not sure what this means, try looking into the readme."
-        )
-        f.close()
-        print("Sheets API: " + error._get_reason()
-              + "\nIf you are not sure what this means, try looking into the readme.")
-        input("Press 'Enter' to exit")
-        sys.exit()
+        handle_error(error=error)
 
 
 scenarios = init_scenario_data()
