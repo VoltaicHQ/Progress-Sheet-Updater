@@ -12,7 +12,7 @@ class consoleOutput:
     def create_output(self, scens):
         hs_found = False
         avg_found = False
-        self.cls(self)
+        #self.cls(self)
         print("Progress Sheet Updater made by", end=" ")
         print(Fore.LIGHTGREEN_EX + "Yondaime & Knar")
         print(Fore.RESET + "Last update was at:", end=" ")
@@ -34,7 +34,7 @@ class consoleOutput:
                 print(Fore.BLUE + str(s), end=" ")
                 print(Fore.RESET + "was updated")
                 print(Fore.RESET + "Average is now", end=" ")
-                print(Fore.BLUE + str(round(sum(scens[s]['avgs']) / len(scens[s]['avgs']), 1)))
+                print(Fore.BLUE + str(scens[s]['avg']))
                 avg_found = True
         if not avg_found:
             print(Fore.BLUE + "no benchmark", end=" ")

@@ -9,7 +9,7 @@ import sys
 # This class handles creating the GoogleAPI Service and fetching the benchmark list
 class spreadSheetReader:
 
-    def read_spreadsheet_id(link):
+    def read_spreadsheet_id(self, link):
         # Read the Spreadsheet ID from the spreadsheetid.txt file
         try:  # Check that the link to the spreadsheet is not empty
             assert link != ""
@@ -26,7 +26,7 @@ class spreadSheetReader:
             input("Press 'Enter' to exit")
             sys.exit()
 
-    def create_service():
+    def create_service(self):
         try:
             assert os.path.exists("credentials.json")
         except AssertionError:
