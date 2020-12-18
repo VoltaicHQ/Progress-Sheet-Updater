@@ -1,13 +1,37 @@
-import sys
-import os
-import time
-import json
 import csv
-from scenario import Scenario
-from sheets import cells_from_sheet_ranges, read_sheet_range, write_to_cell, create_service
-from errors import handle_error
-from typing import List
+import json
+import os
+import re
+import sys
+import time
+from dataclasses import dataclass, field
 from datetime import datetime
+from typing import List
+from errors import handle_error
+from sheets import read_sheet_range, write_to_cell, create_service
+
+
+@dataclass
+class Scenario:
+    hs_cells: list = field(default_factory=list)
+    avg_cells: list = field(default_factory=list)
+    hs: float = 0
+    avg: float = 0
+    recent_scores: list = field(default_factory=list)
+    ids: list = field(default_factory=list)
+
+
+def cells_from_sheet_ranges(ranges):
+    valid_range = re.compile(r'(?P<sheet>.+)!(?P<row1>[A-Z]+)(?P<col1>\d+)(:(?P<row2>[A-Z]+)(?P<col2>\d+))?')
+    for r in ranges:
+        if (m := valid_range.match(r)) and m.group('row1') == m.group('row2'):
+            if m.group('col2'):
+                for i in range(int(m.group('col1')), int(m.group('col2')) + 1):
+                    yield f'{m.group("sheet")}!{m.group("row1")}{i}'
+            else:
+                yield r
+        else:
+            handle_error('range', val=r)
 
 
 def init_scenario_data(config, sheet_api):

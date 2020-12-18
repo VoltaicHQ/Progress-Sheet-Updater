@@ -9,19 +9,6 @@ from googleapiclient.errors import HttpError
 from errors import handle_error
 
 
-def cells_from_sheet_ranges(ranges):
-    valid_range = re.compile(r'(?P<sheet>.+)!(?P<row1>[A-Z]+)(?P<col1>\d+)(:(?P<row2>[A-Z]+)(?P<col2>\d+))?')
-    for r in ranges:
-        if (m := valid_range.match(r)) and m.group('row1') == m.group('row2'):
-            if m.group('col2'):
-                for i in range(int(m.group('col1')), int(m.group('col2')) + 1):
-                    yield f'{m.group("sheet")}!{m.group("row1")}{i}'
-            else:
-                yield r
-        else:
-            handle_error('range', val=r)
-
-
 def read_sheet_range(api, id, sheet_range):
     try:
         response = (api.values()
