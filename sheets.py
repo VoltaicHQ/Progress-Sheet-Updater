@@ -18,7 +18,7 @@ def read_sheet_range(api, id, sheet_range):
         flat = [val.strip() for row in response for val in row]
         return flat
     except HttpError as error:
-        handle_error('sheets_api', error=error)
+        handle_error('sheets_api', val=error._get_reason())
 
 
 def write_to_cell(api, id, cell, val):
@@ -28,7 +28,7 @@ def write_to_cell(api, id, cell, val):
                             valueInputOption='RAW',
                             body={'values': [[val]]}).execute()
     except HttpError as error:
-        handle_error('sheets_api', error=error)
+        handle_error('sheets_api', val=error._get_reason())
 
 
 # https://developers.google.com/sheets/api/quickstart/python
