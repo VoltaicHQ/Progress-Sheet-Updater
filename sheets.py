@@ -9,14 +9,24 @@ from googleapiclient.errors import HttpError
 from errors import handle_error
 
 
+def validate_sheet_range(str):
+    valid_range = re.compile(r'(?P<sheet>.+)!(?P<col1>[A-Z]+)(?P<row1>\d+)(:(?P<col2>[A-Z]+)(?P<row2>\d+))?')
+    return valid_range.match(str)
+
+
 def read_sheet_range(api, id, sheet_range):
     try:
         response = (api.values()
                        .get(spreadsheetId=id, range=sheet_range)
-                       .execute()
-                       .get('values', [['0']]))
-        flat = [val.strip() for row in response for val in row]
+                       .execute())
+        
+        if 'values' not in response:
+            match = validate_sheet_range(response['range'])
+            return [0 for _ in range(int(match.group('row1')), int(match.group('row2')) + 1)]
+
+        flat = [val.strip() for row in response['values'] for val in row]
         return flat
+
     except HttpError as error:
         handle_error('sheets_api', val=error._get_reason())
 

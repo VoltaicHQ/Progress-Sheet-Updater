@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import List
 from errors import handle_error
-from sheets import read_sheet_range, write_to_cell, create_service
+from sheets import create_service, read_sheet_range, validate_sheet_range, write_to_cell
 
 
 @dataclass
@@ -22,12 +22,12 @@ class Scenario:
 
 
 def cells_from_sheet_ranges(ranges):
-    valid_range = re.compile(r'(?P<sheet>.+)!(?P<row1>[A-Z]+)(?P<col1>\d+)(:(?P<row2>[A-Z]+)(?P<col2>\d+))?')
     for r in ranges:
-        if (m := valid_range.match(r)) and m.group('row1') == m.group('row2'):
-            if m.group('col2'):
-                for i in range(int(m.group('col1')), int(m.group('col2')) + 1):
-                    yield f'{m.group("sheet")}!{m.group("row1")}{i}'
+        m = validate_sheet_range(r)
+        if m.group('col1') == m.group('col2'):
+            if m.group('row2'):
+                for i in range(int(m.group('row1')), int(m.group('row2')) + 1):
+                    yield f'{m.group("sheet")}!{m.group("col1")}{i}'
             else:
                 yield r
         else:
@@ -60,7 +60,7 @@ def init_scenario_data(config, sheet_api):
         averages += map(lambda x: float(x), read_sheet_range(sheet_api, config['sheet_id'], r))
 
     if len(highscores) < len(scens): # Require highscore cells but not averages
-        handle_error('range_too_small')
+        handle_error('range_size')
 
     for s in scens:
         scens[s].hs = max([highscores[i] for i in scens[s].ids])
@@ -78,8 +78,8 @@ def read_score_from_file(file_path):
 
 
 def update(config, scens, files):
-    new_hs = []
-    new_avgs = []
+    new_hs = set()
+    new_avgs = set()
 
     # Process new runs to populate new_hs and new_avgs
     for f in files:
@@ -89,7 +89,7 @@ def update(config, scens, files):
 
             if score > scens[s].hs:
                 scens[s].hs = score
-                new_hs.append(s)
+                new_hs.add(s)
 
             if config['calculate_averages']:
                 scens[s].recent_scores.append(score) # Will be last N runs if files are fed chronologically
@@ -101,7 +101,7 @@ def update(config, scens, files):
             runs = scens[s].recent_scores
             if runs and (new_avg := round(sum(runs) / len(runs), 1)) != scens[s].avg:
                 scens[s].avg = new_avg
-                new_avgs.append(s)
+                new_avgs.add(s)
 
     # Pretty output and update progress sheet
     time = datetime.now()
