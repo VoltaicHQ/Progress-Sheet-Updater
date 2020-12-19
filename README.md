@@ -36,11 +36,13 @@ In the same folder as the rest of the program you will find a "config.json".
 Open this file in the editor of your choice, it should look like this:  
 ![config](/readmeimages/config.png)  
 You can edit the options in this config to your liking.  
-#### "path_to_stats":  
+#### "stats_path":  
 Here you input the path to your Kovaak's stats folder, for most people it is  
 "C:\Program Files (x86)\Steam\steamapps\common\FPSAimTrainer\FPSAimTrainer\stats".    
-#### "link_to_sheet":  
-Here you input the link to your Progression Sheet.  
+#### "sheet_id":  
+Here you input the id of your Progression Sheet.  
+To get the id you need the part between the "d/" and the "/edit"   
+For "ht<span>tps://</span>docs.google.com/spreadsheets/d/abcde12345xyz/edit#gid=316103388" it would be "abcde12345xyz"   
 #### "highscore_ranges":  
 Here you input the range where the highscores will be pasted into, keep them at the preset if you do not wish to add extra scenarios to track.  
 #### "average_ranges":  
@@ -77,6 +79,5 @@ You can also use it to update your Progress Sheet manually, by setting "update_s
 ## Troubleshooting:
 
 If your program crashes, you can take a look at the error message in the console window.  
-If you did not read it there it should also exist in a file called "error.txt".  
-
-If you need help and the Troubleshooting is not working dm Yondaime#1370 on the [Voltaic Discord](https://discord.gg/voltaic)  
+Most of them have steps to fix them.   
+If you don't find a way to fix the error by yourself you can ask on the Voltaic Discord for help.   
