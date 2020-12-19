@@ -1,15 +1,13 @@
 import csv
 import json
 import os
-import re
-import sys
 import urllib.request
 import time
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List
 from errors import handle_error
 from sheets import create_service, read_sheet_range, validate_sheet_range, write_to_cell
+from colorama import Fore
 
 
 @dataclass
@@ -113,20 +111,20 @@ def update(config, scens, files):
     time = datetime.now()
 
     if not new_hs and not new_avgs:
-        print(f'[{time:%H:%M:%S}] Your progress sheet is up-to-date')
+        print(Fore.RESET + f'[{time:%H:%M:%S}] Your progress sheet is up-to-date')
         return
 
     if new_hs:
-        print(f'[{time:%H:%M:%S}] New Highscores')
+        print(Fore.RESET + f'[{time:%H:%M:%S}]' + Fore.GREEN + " New Highscores")
         for s in new_hs:
-            print(f'{scens[s].hs:>10} - {s}')
+            print(Fore.BLUE + f'{scens[s].hs:>10}' + Fore.RESET + " - " + Fore.RED + f'{s}')
             for cell in scens[s].hs_cells:
                 write_to_cell(sheet_api, config['sheet_id'], cell, scens[s].hs)
     
     if new_avgs:
-        print(f'[{time:%H:%M:%S}] New Averages')
+        print(Fore.RESET + f'[{time:%H:%M:%S}]' + Fore.GREEN + " New Averages")
         for s in new_avgs:
-            print(f'{scens[s].avg:>10} - {s}')
+            print(Fore.BLUE + f'{scens[s].avg:>10}' + Fore.RESET + " - " + Fore.RED + f'{s}')
             for cell in scens[s].avg_cells:
                 write_to_cell(sheet_api, config['sheet_id'], cell, scens[s].avg)
     

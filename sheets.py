@@ -23,7 +23,9 @@ def read_sheet_range(api, id, sheet_range):
         if 'values' not in response:
             match = validate_sheet_range(response['range'])
             return [0 for _ in range(int(match.group('row1')), int(match.group('row2')) + 1)]
-
+        for list in response['values']:
+            if len(list) < 1:
+                list.append('0')
         flat = [val.strip() for row in response['values'] for val in row]
         return flat
 
