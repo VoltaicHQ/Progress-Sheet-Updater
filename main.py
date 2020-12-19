@@ -3,6 +3,7 @@ import json
 import os
 import re
 import sys
+import urllib.request
 import time
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -85,8 +86,13 @@ def update(config, scens, files):
     for f in files:
         s = f[0:f.find(" - Challenge - ")]
         if s in scens:
+            if s in blacklist.keys():
+                date = f[f.find(" - Challenge - ") + 15:]
+                date = date[:date.find("-")]
+                playdate = datetime.strptime(date, "%Y.%m.%d").date()
+                if playdate <= blacklist[s]:
+                    continue
             score = read_score_from_file(f'{config["stats_path"]}/{f}')
-
             if score > scens[s].hs:
                 scens[s].hs = score
                 new_hs.add(s)
@@ -125,8 +131,27 @@ def update(config, scens, files):
                 write_to_cell(sheet_api, config['sheet_id'], cell, scens[s].avg)
     
 
+def init_versionblacklist():
+    url = 'https://docs.google.com/spreadsheets/d/1bwub3mY1S58hWsEVzcsuKgDxpCf-3BMXegDa_9cqv0A/gviz/tq?tqx=out:csv&sheet=Update_Dates'
+    response = urllib.request.urlopen(url)
+    lines = [l.decode('utf-8') for l in response.readlines()]
+    names = []
+    dates = []
+    blacklist = dict()
+    for l in lines[2:]:
+        splits = l.split('","')
+        names.append(splits[0].replace('"', ''))
+        dates.append(datetime.strptime(splits[1].replace('"', '').replace('\n', ''), "%d.%m.%Y").date())
+
+    for name in names:
+        for date in dates:
+            blacklist[name] = date
+    return blacklist
+
+
 config = json.load(open('config.json', 'r'))
 sheet_api = create_service()
+blacklist = init_versionblacklist()
 scenarios = init_scenario_data(config, sheet_api)
 stats = list(sorted(os.listdir(config['stats_path'])))
 
