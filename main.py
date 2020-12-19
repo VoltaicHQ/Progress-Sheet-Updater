@@ -62,8 +62,8 @@ def init_scenario_data(config, sheet_api):
         handle_error('range_size')
 
     for s in scens:
-        scens[s].hs = max([highscores[i] for i in scens[s].ids])
-        scens[s].avg = max([averages[i] for i in scens[s].ids])
+        scens[s].hs = min([highscores[i] for i in scens[s].ids])
+        scens[s].avg = min([averages[i] for i in scens[s].ids])
 
     return scens
     
