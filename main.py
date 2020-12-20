@@ -3,11 +3,11 @@ import json
 import os
 import urllib.request
 import time
+from colorama import Fore
 from dataclasses import dataclass, field
 from datetime import datetime
 from errors import handle_error
 from sheets import create_service, read_sheet_range, validate_sheet_range, write_to_cell
-from colorama import Fore
 
 
 @dataclass
