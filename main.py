@@ -111,20 +111,20 @@ def update(config, scens, files):
     time = datetime.now()
 
     if not new_hs and not new_avgs:
-        print(Fore.RESET + f'[{time:%H:%M:%S}] Your progress sheet is up-to-date')
+        print(f'{Fore.RESET}[{time:%H:%M:%S}] Your progress sheet is up-to-date')
         return
 
     if new_hs:
-        print(Fore.RESET + f'[{time:%H:%M:%S}]' + Fore.GREEN + " New Highscores")
+        print(f'{Fore.RESET}[{time:%H:%M:%S}] {Fore.GREEN}New Highscore{'s' if len(new_hs > 1) else ''})
         for s in new_hs:
-            print(Fore.BLUE + f'{scens[s].hs:>10}' + Fore.RESET + " - " + Fore.RED + f'{s}')
+            print(f'{Fore.BLUE}{scens[s].hs:>10} {Fore.RESET}- {Fore.RED}{s}')
             for cell in scens[s].hs_cells:
                 write_to_cell(sheet_api, config['sheet_id'], cell, scens[s].hs)
     
     if new_avgs:
-        print(Fore.RESET + f'[{time:%H:%M:%S}]' + Fore.GREEN + " New Averages")
+        print(f'{Fore.RESET}[{time:%H:%M:%S}] {Fore.GREEN}New Average{'s' if len(new_hs > 1) else ''}')
         for s in new_avgs:
-            print(Fore.BLUE + f'{scens[s].avg:>10}' + Fore.RESET + " - " + Fore.RED + f'{s}')
+            print(f'{Fore.BLUE}{scens[s].avg:>10} {Fore.RESET}- {Fore.RED}{s}')
             for cell in scens[s].avg_cells:
                 write_to_cell(sheet_api, config['sheet_id'], cell, scens[s].avg)
     
