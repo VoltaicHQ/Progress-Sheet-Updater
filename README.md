@@ -13,7 +13,7 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
 
 ## Quickstart Guide
 
-1. [Download](https://github.com/VoltaicHQ/Progress-Sheet-Updater/releases) and extract the latest release.
+1. Download and extract the [latest release](https://github.com/VoltaicHQ/Progress-Sheet-Updater/releases).
 
 2. Go [here](https://developers.google.com/sheets/api/quickstart/python#step_1_turn_on_the), and ensure you are logged in to the same Google Account that owns your progress sheet.
 
