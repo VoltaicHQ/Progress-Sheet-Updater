@@ -24,6 +24,9 @@ def read_sheet_range(api, id, sheet_range):
         # responses trim blank cells, act as if they are 0-filled
         m = validate_sheet_range(sheet_range)
         length = int(m.group('row2')) - int(m.group('row1')) + 1
+        for lst in response:
+            if len(lst) < 1:
+                lst.append('0')
         flat = [val.strip() for row in response for val in row]
         while len(flat) < length:
             flat.append('0')
