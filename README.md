@@ -24,10 +24,10 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
     5. Move the `credentials.json` file to your extracted folder, alongside `ProgressSheetUpdater.exe` and `config.json`.
     
 <p align="center">
-    <img width="200" alt="Folder contents before oauth" src="readmeimages/folder_contents_before_auth.png">
+    <img alt="Folder contents before oauth" src="readmeimages/folder_contents_before_auth.png">
 </p>
 
-3. Open `config.json` your text editor of choice and add your sheet's ID. Then save and close the file.
+3. Open `config.json` in your text editor of choice and add your sheet's ID. Then save and close the file.
 
 ![Sheet ID from URL](/readmeimages/sheet_id_from_url.png) 
 
