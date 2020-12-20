@@ -22,21 +22,20 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
     3. Click `Create` in the bottom-right.
     4. Click the blue `DOWNLOAD CLIENT CONFIGURATION` button.
     5. Move the `credentials.json` file to your extracted folder, alongside `ProgressSheetUpdater.exe` and `config.json`.
+    
     ![Folder contents before oauth](/readmeimages/folder_contents_before_auth.png)
 
-3. Open `config.json` your text editor of choice and add your sheet's ID.
+3. Open `config.json` your text editor of choice and add your sheet's ID. Then save and close the file.
 
 ![Sheet ID from URL](/readmeimages/sheet_id_from_url.png) 
 
-```json
+```
 {
     ...
     "sheet_id": "175i2Us2Vyi3eauSe5rWE94KE4DmIJE_iusa2d4OvC3E",
     ...
 }
 ```
-
-Save and close the file.
 
 4. Run `ProgressSheetUpdater.exe`.
 
@@ -45,8 +44,7 @@ Save and close the file.
     3. Click `Allow`.
     4. Click `Allow` again. A file called `token.pickle` will be saved to avoid future prompts.
 
-5. Beat your High Scores
-
+5. Beat your high scores.
 
 ## Build It Yourself
 
