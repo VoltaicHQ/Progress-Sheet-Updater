@@ -5,7 +5,7 @@
 
 ## About
 
-This tool updates your [Voltaic Benchmark Progress Sheet](https://docs.google.com/spreadsheets/d/1oloiojSWGmgdId5f248HH-uteIONwEgm4FCYUlmp5FU/) with high scores and averages of completed challenges on [KovaaK](https://store.steampowered.com/app/824270/KovaaK_20/).
+This tool updates your [Voltaic Benchmark Progress Sheet](https://docs.google.com/spreadsheets/d/1L6iCXTaSheZtVwtVR4b_FYJzcCZbEYVRsdFo7PI3HTk/) with high scores and averages of completed challenges on [KovaaK](https://store.steampowered.com/app/824270/KovaaK_20/).
 
 Run it before checking your progress sheet, or leave it running in the background to keep your sheet up-to-date as you play.
 
@@ -13,7 +13,7 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
 
 ## Quickstart Guide
 
-1. [Download](https://github.com/VoltaicHQ/Progress-Sheet-Updater/releases/tag/v1.0) and extract the latest release.
+1. [Download](https://github.com/VoltaicHQ/Progress-Sheet-Updater/releases) and extract the latest release.
 
 2. Go [here](https://developers.google.com/sheets/api/quickstart/python#step_1_turn_on_the), and ensure you are logged in to the same Google Account that owns your progress sheet.
 
