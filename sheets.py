@@ -18,15 +18,16 @@ def read_sheet_range(api, id, sheet_range):
     try:
         response = (api.values()
                        .get(spreadsheetId=id, range=sheet_range)
-                       .execute())
+                       .execute()
+                       .get('values', [['0']]))
         
-        if 'values' not in response:
-            match = validate_sheet_range(response['range'])
-            return [0 for _ in range(int(match.group('row1')), int(match.group('row2')) + 1)]
-        for list in response['values']:
-            if len(list) < 1:
-                list.append('0')
-        flat = [val.strip() for row in response['values'] for val in row]
+        # responses trim blank cells, act as if they are 0-filled
+        m = validate_sheet_range(sheet_range)
+        length = int(m.group('row2')) - int(m.group('row1')) + 1
+        flat = [val.strip() for row in response for val in row]
+        while len(flat) < length:
+            flat.append('0')
+
         return flat
 
     except HttpError as error:
