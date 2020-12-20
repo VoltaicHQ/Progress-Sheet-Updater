@@ -1,4 +1,4 @@
-colorama==0.4.4
-google_api_python_client==1.12.8
 google_auth_oauthlib==0.4.2
+google_api_python_client==1.12.8
 protobuf==3.14.0
+pyinstaller==4.1
