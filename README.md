@@ -1,6 +1,6 @@
 <h1 align="center">Progress Sheet Updater</h1>
 <p align="center">
-    <img width="200" alt="Screenshot" src="readmeimages/screenshot.png">
+    <img width="300" alt="Screenshot" src="readmeimages/screenshot.gif">
 </p>
 
 ## About
