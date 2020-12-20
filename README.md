@@ -1,12 +1,3 @@
-image of thing working -- [console] -> [spreadsheet] gif?
-
-What it does, how to use it
-
-Install instructions
-
-Manual compiling instructions
-
-
 <h1 align="center">Progress Sheet Updater</h1>
 <p align="center">
     <img width="200" alt="Screenshot" src="readmeimages/screenshot.png">
