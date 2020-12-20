@@ -76,7 +76,7 @@ def read_score_from_file(file_path):
     return 0.0
 
 
-def update(config, scens, files):
+def update(config, scens, files, blacklist):
     new_hs = set()
     new_avgs = set()
 
@@ -154,12 +154,12 @@ scenarios = init_scenario_data(config, sheet_api)
 stats = list(sorted(os.listdir(config['stats_path'])))
 
 if config['update_sheet_on_startup']:
-    update(config, scenarios, stats)
-    time.sleep(config['polling_interval'])
+    update(config, scenarios, stats, blacklist)
+    time.sleep(max(config['polling_interval'], 30))
 
 while True:
     new_stats = os.listdir(config['stats_path'])
     unprocessed = list(sorted([f for f in new_stats if f not in stats]))
-    update(config, scenarios, unprocessed)
+    update(config, scenarios, unprocessed, blacklist)
     stats = new_stats
-    time.sleep(config['polling_interval'])
+    time.sleep(max(config['polling_interval'], 30))
