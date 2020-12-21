@@ -39,6 +39,46 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
 }
 ```
 
+You can edit the options in this config to your liking.
+```
+"stats_path":  
+Here you input the path to your Kovaak's stats folder, for most people it is  
+"C:\Program Files (x86)\Steam\steamapps\common\FPSAimTrainer\FPSAimTrainer\stats".
+```
+```
+"sheet_id":  
+Here you input the id of your Progression Sheet.  
+To get the id you need the part between the "d/" and the "/edit"   
+For "ht<span>tps://</span>docs.google.com/spreadsheets/d/abcde12345xyz/edit#gid=316103388" it would be "abcde12345xyz"   
+```
+```
+"highscore_ranges":  
+Here you input the range where the highscores will be pasted into, keep them at the preset if you do not wish to add extra scenarios to track.   
+```
+```
+"average_ranges":  
+Here you input the range where the averages will be pasted into, keep them at the preset if you do not wish to add extra scenarios to track.  
+```
+```
+"update_sheet_on_startup":  
+If "true" this updates your sheet on startup of the program, using all runs u played even when the program was not running.  
+If "false" this will not update your sheet on startup.  
+```
+```
+"calculate_averages":  
+If "true" the program calculates the averages of your last x runs.  
+If "false" it does not.  
+```
+```
+"num_of_runs_to_average":  
+Here you input the number of runs you want to use to calculate the averages.  
+```
+```
+"polling_interval":  
+Here you input the time between updates to the sheet.  
+Polling rates lower than 60 are not advised to use.
+```
+
 4. Run `ProgressSheetUpdater.exe`.
 
     1. Choose the account that owns your progress sheet.
