@@ -50,7 +50,7 @@ Make sure you use "\\".
 "sheet_id":  
 Here you input the id of your Progression Sheet.  
 To get the id you need the part between the "d/" and the "/edit"   
-For "ht<span>tps://</span>docs.google.com/spreadsheets/d/abcde12345xyz/edit#gid=316103388" it would be "abcde12345xyz"   
+For "https://docs.google.com/spreadsheets/d/abcde12345xyz/edit#gid=316103388" it would be "abcde12345xyz"   
 ```
 ```
 "highscore_ranges":  
