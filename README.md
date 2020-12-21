@@ -43,7 +43,8 @@ You can edit the options in this config to your liking.
 ```
 "stats_path":  
 Here you input the path to your Kovaak's stats folder, for most people it is  
-"C:\Program Files (x86)\Steam\steamapps\common\FPSAimTrainer\FPSAimTrainer\stats".
+"C:\\Program Files (x86)\\Steam\\steamapps\\common\\FPSAimTrainer\\FPSAimTrainer\\stats".
+Make sure you use "\\".
 ```
 ```
 "sheet_id":  
