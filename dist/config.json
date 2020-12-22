@@ -13,7 +13,7 @@
 		"Intermediate Requirements!M3:M20",
 		"Advanced Requirements!M3:M20"
 	],
-	"update_sheet_on_startup": true,
+	"run_once": true,
 	"calculate_averages": true,
 	"num_of_runs_to_average": 5,
 	"polling_interval": 60
