@@ -7,6 +7,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from errors import handle_error
 from sheets import create_service, read_sheet_range, validate_sheet_range, write_to_cell
+from gui import Gui
+import sys
 
 
 @dataclass
@@ -146,15 +148,19 @@ def init_versionblacklist():
     return blacklist
 
 
+gui = Gui()
 config = json.load(open('config.json', 'r'))
 sheet_api = create_service()
 blacklist = init_versionblacklist()
 scenarios = init_scenario_data(config, sheet_api)
 stats = list(sorted(os.listdir(config['stats_path'])))
 
-if config['update_sheet_on_startup']:
+if config['run_once']:
+    print("run_once is active")
     update(config, scenarios, stats, blacklist)
-    time.sleep(max(config['polling_interval'], 30))
+    print("Finished Updating, program will close in 3 seconds...")
+    time.sleep(3)
+    sys.exit()
 
 while True:
     new_stats = os.listdir(config['stats_path'])
