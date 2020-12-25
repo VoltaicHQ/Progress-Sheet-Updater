@@ -25,7 +25,6 @@ class Gui:
         self.path.set(self.config["stats_path"])
         self.runs_to_average.set(int(self.config["num_of_runs_to_average"]))
 
-
     def browse_path(self):
         self.path.set(filedialog.askdirectory(initialdir=self.path.get(), title="test"))
 

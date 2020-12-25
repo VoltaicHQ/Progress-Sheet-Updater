@@ -83,7 +83,7 @@ def update(config, scens, files, blacklist):
 
     # Process new runs to populate new_hs and new_avgs
     for f in files:
-        s = f[0:f.find(" - Challenge - ")]
+        s = f[0:f.find(" - Challenge - ")].lower()
         if s in scens:
             if s in blacklist.keys():
                 date = f[f.find(" - Challenge - ") + 15:]
@@ -144,7 +144,7 @@ def init_versionblacklist():
 
     for name in names:
         for date in dates:
-            blacklist[name] = date
+            blacklist[name.lower()] = date
     return blacklist
 
 
@@ -161,6 +161,7 @@ if config['run_once']:
     print("Finished Updating, program will close in 3 seconds...")
     time.sleep(3)
     sys.exit()
+update(config, scenarios, stats, blacklist)
 
 while True:
     new_stats = os.listdir(config['stats_path'])

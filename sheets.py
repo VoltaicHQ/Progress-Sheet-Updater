@@ -27,7 +27,7 @@ def read_sheet_range(api, id, sheet_range):
         for lst in response:
             if len(lst) < 1:
                 lst.append('0')
-        flat = [val.strip() for row in response for val in row]
+        flat = [val.strip().lower() for row in response for val in row]
         while len(flat) < length:
             flat.append('0')
 
