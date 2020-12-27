@@ -8,7 +8,7 @@ class Gui:
         # Read config and initialize Variables for Gui
         self.config = json.load(open('config.json', 'r'))
         self.window = Tk()
-        self.window.title("Config")
+        self.window.title("Progress Sheet Updater - Configurator")
         self.window.geometry("700x120")
         self.path = StringVar()
         self.sheet_id = StringVar()
@@ -26,7 +26,7 @@ class Gui:
         self.runs_to_average.set(int(self.config["num_of_runs_to_average"]))
 
     def browse_path(self):
-        self.path.set(filedialog.askdirectory(initialdir=self.path.get(), title="test"))
+        self.path.set(filedialog.askdirectory(initialdir=self.path.get(), title="Open Folder"))
 
     def finished(self):
         self.config["stats_path"] = self.path.get()
@@ -47,7 +47,7 @@ class Gui:
     def main(self):
         # Gui for path
         path_frame = Frame(self.window)
-        pre_path_label = Label(path_frame, text="Path: ")
+        pre_path_label = Label(path_frame, text="Kovaak's Stats Path: ")
         browse_path_button = Button(path_frame, text="Browse", command=self.browse_path)
         path_label = Label(path_frame, textvariable=self.path)
         pre_path_label.pack(side="left")
@@ -57,7 +57,7 @@ class Gui:
         # Gui for sheetid
         sheet_id_frame = Frame(self.window)
         sheet_id_entry = Entry(sheet_id_frame, textvariable=self.sheet_id)
-        pre_sheet_id_label = Label(sheet_id_frame, text="Progresssheet: ")
+        pre_sheet_id_label = Label(sheet_id_frame, text="Progress Sheet ID: ")
         pre_sheet_id_label.pack(side="left")
         sheet_id_entry.pack(fill="x")
 
