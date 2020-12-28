@@ -12,6 +12,7 @@ from errors import handle_error
 from sheets import create_service, read_sheet_range, validate_sheet_range, write_to_cell
 from gui import Gui
 import sys
+import googleapiclient.discovery
 
 
 @dataclass
@@ -24,7 +25,7 @@ class Scenario:
     ids: list = field(default_factory=list)
 
 
-def cells_from_sheet_ranges(ranges):
+def cells_from_sheet_ranges(ranges: str):
     for r in ranges:
         m = validate_sheet_range(r)
         if m.group('col1') == m.group('col2'):
@@ -37,7 +38,7 @@ def cells_from_sheet_ranges(ranges):
             handle_error('range', val=r)
 
 
-def init_scenario_data(config, sheet_api):
+def init_scenario_data(config: dict, sheet_api: googleapiclient.discovery.Resource) -> dict:
     hs_cells_iter = cells_from_sheet_ranges(config['highscore_ranges'])
     avg_cells_iter = cells_from_sheet_ranges(config['average_ranges'])
 
@@ -72,7 +73,7 @@ def init_scenario_data(config, sheet_api):
     return scens
 
 
-def read_score_from_file(file_path):
+def read_score_from_file(file_path: str) -> float:
     with open(file_path, newline='') as csvfile:
         for row in csv.reader(csvfile):
             if row and row[0] == 'Score:':
@@ -80,7 +81,7 @@ def read_score_from_file(file_path):
     return 0.0
 
 
-def update(config, scens, files, blacklist):
+def update(config: dict, scens: dict, files: list, blacklist: dict) -> None:
     new_hs = set()
     new_avgs = set()
 
@@ -156,13 +157,14 @@ if __name__ == "__main__":
     gui.main()
 
     config = json.load(open('config.json', 'r'))
+    logging.debug(json.dumps(config, indent=2))
+
     sheet_api = create_service()
     blacklist = init_versionblacklist()
     scenarios = init_scenario_data(config, sheet_api)
     stats = list(sorted(os.listdir(config['stats_path'])))
 
     if config['run_once']:
-        logging.info("run_once is active")
         update(config, scenarios, stats, blacklist)
         logging.info("Finished Updating, program will close in 3 seconds...")
         time.sleep(3)
