@@ -18,5 +18,6 @@
 	"num_of_runs_to_average": 5,
 	"polling_interval": 60,
 	"file_watcher_mode": "watchdog",
-	"file_watcher_debounce_time": 0.5
+	"file_watcher_debounce_time": 0.5,
+	"open_config": true
 }
