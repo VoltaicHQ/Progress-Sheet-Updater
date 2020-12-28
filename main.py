@@ -114,7 +114,7 @@ def update(config: dict, scens: dict, files: list, blacklist: dict) -> None:
 
     # Pretty output and update progress sheet
     if not new_hs and not new_avgs:
-        logging.info('Your progress sheet is up-to-date')
+        logging.info('Your progress sheet is up-to-date.')
         return
 
     if new_hs:
@@ -169,11 +169,14 @@ if __name__ == "__main__":
         logging.info("Finished Updating, program will close in 3 seconds...")
         time.sleep(3)
         sys.exit()
-    update(config, scenarios, stats, blacklist)
 
     while True:
         new_stats = os.listdir(config['stats_path'])
         unprocessed = list(sorted([f for f in new_stats if f not in stats]))
         update(config, scenarios, unprocessed, blacklist)
         stats = new_stats
-        time.sleep(max(config['polling_interval'], 30))
+        try:
+            time.sleep(max(config['polling_interval'], 30))
+        except KeyboardInterrupt:
+            logging.debug('Got keyboard interrupt. Terminating...')
+            break
