@@ -6,12 +6,9 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime
 from threading import Timer
-
 from watchdog.events import FileSystemEventHandler
-
 from errors import handle_error
 from sheets import create_service, read_sheet_range, validate_sheet_range, write_to_cell
-from gui import Gui
 import sys
 from watchdog.observers import Observer
 
