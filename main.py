@@ -59,7 +59,7 @@ def init_scenario_data(config, sheet_api):
     for r in config['average_ranges']:
         averages += map(lambda x: float(x), read_sheet_range(sheet_api, config['sheet_id'], r))
 
-    if len(highscores) < len(scens): # Require highscore cells but not averages
+    if len(highscores) < len(scens):  # Require highscore cells but not averages
         handle_error('range_size')
 
     for s in scens:
@@ -67,7 +67,7 @@ def init_scenario_data(config, sheet_api):
         scens[s].avg = min([averages[i] for i in scens[s].ids])
 
     return scens
-    
+
 
 def read_score_from_file(file_path):
     with open(file_path, newline='') as csvfile:
@@ -97,10 +97,10 @@ def update(config, scens, files, blacklist):
                 new_hs.add(s)
 
             if config['calculate_averages']:
-                scens[s].recent_scores.append(score) # Will be last N runs if files are fed chronologically
+                scens[s].recent_scores.append(score)  # Will be last N runs if files are fed chronologically
                 if len(scens[s].recent_scores) > config['num_of_runs_to_average']:
                     scens[s].recent_scores.pop(0)
-    
+
     if config['calculate_averages']:
         for s in scens:
             runs = scens[s].recent_scores
@@ -121,14 +121,14 @@ def update(config, scens, files, blacklist):
             print(f'{scens[s].hs:>10} - {s}')
             for cell in scens[s].hs_cells:
                 write_to_cell(sheet_api, config['sheet_id'], cell, scens[s].hs)
-    
+
     if new_avgs:
         print(f'[{time:%H:%M:%S}] New Average{"s" if len(new_hs) > 1 else ""}')
         for s in new_avgs:
             print(f'{scens[s].avg:>10} - {s}')
             for cell in scens[s].avg_cells:
                 write_to_cell(sheet_api, config['sheet_id'], cell, scens[s].avg)
-    
+
 
 def init_versionblacklist():
     url = 'https://docs.google.com/spreadsheets/d/1bwub3mY1S58hWsEVzcsuKgDxpCf-3BMXegDa_9cqv0A/gviz/tq?tqx=out:csv&sheet=Update_Dates'
