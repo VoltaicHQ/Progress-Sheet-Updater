@@ -139,7 +139,7 @@ def init_versionblacklist():
     names = []
     dates = []
     blacklist = dict()
-    for l in lines[2:]:
+    for l in lines[1:]:
         splits = l.split('","')
         names.append(splits[0].replace('"', ''))
         dates.append(datetime.strptime(splits[1].replace('"', '').replace('\n', ''), "%d.%m.%Y").date())
