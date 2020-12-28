@@ -159,8 +159,13 @@ if __name__ == "__main__":
     config = json.load(open('config.json', 'r'))
     logging.debug(json.dumps(config, indent=2))
 
+    logging.debug("Creating service...")
     sheet_api = create_service()
+
+    logging.debug("Initializing version blacklist...")
     blacklist = init_versionblacklist()
+
+    logging.debug("Initializing scenario data...")
     scenarios = init_scenario_data(config, sheet_api)
     stats = list(sorted(os.listdir(config['stats_path'])))
 
