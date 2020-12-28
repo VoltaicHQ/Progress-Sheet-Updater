@@ -164,8 +164,8 @@ if __name__ == "__main__":
     scenarios = init_scenario_data(config, sheet_api)
     stats = list(sorted(os.listdir(config['stats_path'])))
 
+    update(config, scenarios, stats, blacklist)
     if config['run_once']:
-        update(config, scenarios, stats, blacklist)
         logging.info("Finished Updating, program will close in 3 seconds...")
         time.sleep(3)
         sys.exit()
