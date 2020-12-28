@@ -1,3 +1,6 @@
+import logging
+import logging.config
+
 import csv
 import json
 import os
@@ -109,23 +112,21 @@ def update(config, scens, files, blacklist):
                 new_avgs.add(s)
 
     # Pretty output and update progress sheet
-    time = datetime.now()
-
     if not new_hs and not new_avgs:
-        print(f'[{time:%H:%M:%S}] Your progress sheet is up-to-date')
+        logging.info('Your progress sheet is up-to-date')
         return
 
     if new_hs:
-        print(f'[{time:%H:%M:%S}] New Highscore{"s" if len(new_hs) > 1 else ""}')
+        logging.info(f'New Highscore{"s" if len(new_hs) > 1 else ""}')
         for s in new_hs:
-            print(f'{scens[s].hs:>10} - {s}')
+            logging.info(f'{scens[s].hs:>10} - {s}')
             for cell in scens[s].hs_cells:
                 write_to_cell(sheet_api, config['sheet_id'], cell, scens[s].hs)
 
     if new_avgs:
-        print(f'[{time:%H:%M:%S}] New Average{"s" if len(new_hs) > 1 else ""}')
+        logging.info(f' New Average{"s" if len(new_hs) > 1 else ""}')
         for s in new_avgs:
-            print(f'{scens[s].avg:>10} - {s}')
+            logging.info(f'{scens[s].avg:>10} - {s}')
             for cell in scens[s].avg_cells:
                 write_to_cell(sheet_api, config['sheet_id'], cell, scens[s].avg)
 
@@ -148,24 +149,27 @@ def init_versionblacklist():
     return blacklist
 
 
-gui = Gui()
-config = json.load(open('config.json', 'r'))
-sheet_api = create_service()
-blacklist = init_versionblacklist()
-scenarios = init_scenario_data(config, sheet_api)
-stats = list(sorted(os.listdir(config['stats_path'])))
+if __name__ == "__main__":
+    logging.config.fileConfig('logging.conf')
 
-if config['run_once']:
-    print("run_once is active")
+    gui = Gui()
+    config = json.load(open('config.json', 'r'))
+    sheet_api = create_service()
+    blacklist = init_versionblacklist()
+    scenarios = init_scenario_data(config, sheet_api)
+    stats = list(sorted(os.listdir(config['stats_path'])))
+
+    if config['run_once']:
+        logging.info("run_once is active")
+        update(config, scenarios, stats, blacklist)
+        logging.info("Finished Updating, program will close in 3 seconds...")
+        time.sleep(3)
+        sys.exit()
     update(config, scenarios, stats, blacklist)
-    print("Finished Updating, program will close in 3 seconds...")
-    time.sleep(3)
-    sys.exit()
-update(config, scenarios, stats, blacklist)
 
-while True:
-    new_stats = os.listdir(config['stats_path'])
-    unprocessed = list(sorted([f for f in new_stats if f not in stats]))
-    update(config, scenarios, unprocessed, blacklist)
-    stats = new_stats
-    time.sleep(max(config['polling_interval'], 30))
+    while True:
+        new_stats = os.listdir(config['stats_path'])
+        unprocessed = list(sorted([f for f in new_stats if f not in stats]))
+        update(config, scenarios, unprocessed, blacklist)
+        stats = new_stats
+        time.sleep(max(config['polling_interval'], 30))
