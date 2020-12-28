@@ -5,10 +5,15 @@ import urllib.request
 import time
 from dataclasses import dataclass, field
 from datetime import datetime
+from threading import Timer
+
+from watchdog.events import FileSystemEventHandler
+
 from errors import handle_error
 from sheets import create_service, read_sheet_range, validate_sheet_range, write_to_cell
 from gui import Gui
 import sys
+from watchdog.observers import Observer
 
 
 @dataclass
@@ -59,7 +64,7 @@ def init_scenario_data(config, sheet_api):
     for r in config['average_ranges']:
         averages += map(lambda x: float(x), read_sheet_range(sheet_api, config['sheet_id'], r))
 
-    if len(highscores) < len(scens): # Require highscore cells but not averages
+    if len(highscores) < len(scens):  # Require highscore cells but not averages
         handle_error('range_size')
 
     for s in scens:
@@ -67,7 +72,7 @@ def init_scenario_data(config, sheet_api):
         scens[s].avg = min([averages[i] for i in scens[s].ids])
 
     return scens
-    
+
 
 def read_score_from_file(file_path):
     with open(file_path, newline='') as csvfile:
@@ -97,10 +102,10 @@ def update(config, scens, files, blacklist):
                 new_hs.add(s)
 
             if config['calculate_averages']:
-                scens[s].recent_scores.append(score) # Will be last N runs if files are fed chronologically
+                scens[s].recent_scores.append(score)  # Will be last N runs if files are fed chronologically
                 if len(scens[s].recent_scores) > config['num_of_runs_to_average']:
                     scens[s].recent_scores.pop(0)
-    
+
     if config['calculate_averages']:
         for s in scens:
             runs = scens[s].recent_scores
@@ -121,14 +126,14 @@ def update(config, scens, files, blacklist):
             print(f'{scens[s].hs:>10} - {s}')
             for cell in scens[s].hs_cells:
                 write_to_cell(sheet_api, config['sheet_id'], cell, scens[s].hs)
-    
+
     if new_avgs:
         print(f'[{time:%H:%M:%S}] New Average{"s" if len(new_hs) > 1 else ""}')
         for s in new_avgs:
             print(f'{scens[s].avg:>10} - {s}')
             for cell in scens[s].avg_cells:
                 write_to_cell(sheet_api, config['sheet_id'], cell, scens[s].avg)
-    
+
 
 def init_versionblacklist():
     url = 'https://docs.google.com/spreadsheets/d/1bwub3mY1S58hWsEVzcsuKgDxpCf-3BMXegDa_9cqv0A/gviz/tq?tqx=out:csv&sheet=Update_Dates'
@@ -148,24 +153,81 @@ def init_versionblacklist():
     return blacklist
 
 
-gui = Gui()
+class LambdaDispatchEventHandler(FileSystemEventHandler):
+
+    def __init__(self, func):
+        self.func = func
+
+    def on_any_event(self, event):
+        if event.is_directory:
+            return None
+        elif event.event_type == 'modified':
+            self.func()
+
+
+def debounce(wait):
+    """ Decorator that will postpone a functions
+        execution until after wait seconds
+        have elapsed since the last time it was invoked.
+        https://gist.github.com/walkermatt/2871026 """
+
+    def decorator(fn):
+        def debounced(*args, **kwargs):
+            def call_it():
+                fn(*args, **kwargs)
+
+            try:
+                debounced.t.cancel()
+            except AttributeError:
+                pass
+            debounced.t = Timer(wait, call_it)
+            debounced.t.start()
+
+        return debounced
+
+    return decorator
+
+
 config = json.load(open('config.json', 'r'))
 sheet_api = create_service()
 blacklist = init_versionblacklist()
 scenarios = init_scenario_data(config, sheet_api)
 stats = list(sorted(os.listdir(config['stats_path'])))
 
-if config['run_once']:
-    print("run_once is active")
-    update(config, scenarios, stats, blacklist)
-    print("Finished Updating, program will close in 3 seconds...")
-    time.sleep(3)
-    sys.exit()
-update(config, scenarios, stats, blacklist)
 
-while True:
+@debounce(5)
+def process_files():
+    global config, sheet_api, blacklist, scenarios, stats
+
     new_stats = os.listdir(config['stats_path'])
     unprocessed = list(sorted([f for f in new_stats if f not in stats]))
     update(config, scenarios, unprocessed, blacklist)
     stats = new_stats
-    time.sleep(max(config['polling_interval'], 30))
+
+
+update(config, scenarios, stats, blacklist)
+
+if config['run_once']:
+    print("Flag run_once is active.")
+    print("Finished Updating, program will close in 3 seconds...")
+    time.sleep(3)
+    sys.exit()
+
+if config['file_watcher_mode'] == 'watchdog':
+    event_handler = LambdaDispatchEventHandler(lambda: process_files())
+    observer = Observer()
+    observer.schedule(event_handler, config['stats_path'])
+    observer.start()
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        observer.stop()
+    observer.join()
+elif config['file_watcher_mode'] == 'interval':
+    while True:
+        process_files()
+        time.sleep(max(config['polling_interval'], 30))
+else:
+    print("File watcher mode is not supported. Supported types are 'watchdog'/'interval'.")
+    print("Finished Updating, program will close in 3 seconds...")

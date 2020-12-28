@@ -99,7 +99,3 @@ class Gui:
         advanced_frame.pack(fill="x")
         finished_frame.pack(fill="x")
         self.window.mainloop()
-
-
-test = Gui()
-test.main()
