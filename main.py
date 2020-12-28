@@ -227,4 +227,7 @@ elif config['file_watcher_mode'] == 'interval':
         time.sleep(max(config['polling_interval'], 30))
 else:
     print("File watcher mode is not supported. Supported types are 'watchdog'/'interval'.")
-    print("Finished Updating, program will close in 3 seconds...")
+
+print("Program will close in 3 seconds...")
+time.sleep(3)
+sys.exit()
