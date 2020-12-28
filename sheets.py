@@ -71,7 +71,7 @@ def create_service():
             with open('token.pickle', 'wb') as token:
                 pickle.dump(creds, token)
 
-        service = build('sheets', 'v4', credentials=creds)
+        service = build('sheets', 'v4', cache_discovery=False, credentials=creds)
         return service.spreadsheets()
     except HttpError as error:
         handle_error('sheets_api', val=error._get_reason())
