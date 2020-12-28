@@ -11,6 +11,7 @@ from errors import handle_error
 from sheets import create_service, read_sheet_range, validate_sheet_range, write_to_cell
 import sys
 from watchdog.observers import Observer
+from gui import Gui
 
 
 @dataclass
@@ -185,6 +186,8 @@ def debounce(wait):
     return decorator
 
 
+gui = Gui()
+gui.main()
 config = json.load(open('config.json', 'r'))
 sheet_api = create_service()
 blacklist = init_versionblacklist()
