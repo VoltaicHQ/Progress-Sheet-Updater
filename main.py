@@ -192,7 +192,7 @@ scenarios = init_scenario_data(config, sheet_api)
 stats = list(sorted(os.listdir(config['stats_path'])))
 
 
-@debounce(5)
+@debounce(config['file_watcher_debounce_time'])
 def process_files():
     global config, sheet_api, blacklist, scenarios, stats
 
@@ -227,7 +227,3 @@ elif config['file_watcher_mode'] == 'interval':
         time.sleep(max(config['polling_interval'], 30))
 else:
     print("File watcher mode is not supported. Supported types are 'watchdog'/'interval'.")
-
-print("Program will close in 3 seconds...")
-time.sleep(3)
-sys.exit()
