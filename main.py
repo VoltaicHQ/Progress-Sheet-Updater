@@ -153,6 +153,8 @@ if __name__ == "__main__":
     logging.config.fileConfig('logging.conf')
 
     gui = Gui()
+    gui.main()
+
     config = json.load(open('config.json', 'r'))
     sheet_api = create_service()
     blacklist = init_versionblacklist()
