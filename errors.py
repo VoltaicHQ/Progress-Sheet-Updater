@@ -1,5 +1,5 @@
-import sys
 import logging
+import sys
 
 
 def handle_error(error_type, val=''):

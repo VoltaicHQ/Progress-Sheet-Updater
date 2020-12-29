@@ -1,11 +1,12 @@
-import sys
-import pickle
 import os.path
+import pickle
 import re
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
+
 from google.auth.transport.requests import Request
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+
 from errors import handle_error
 
 

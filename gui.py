@@ -1,6 +1,6 @@
+import json
 from tkinter import *
 from tkinter import filedialog
-import json
 
 
 class Gui:

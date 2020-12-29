@@ -1,20 +1,22 @@
-import logging
-import logging.config
 import csv
 import json
+import logging
+import logging.config
 import os
-import urllib.request
+import sys
 import time
+import urllib.request
 from dataclasses import dataclass, field
 from datetime import datetime
 from threading import Timer
-from watchdog.events import FileSystemEventHandler
-from errors import handle_error
-from sheets import create_service, read_sheet_range, validate_sheet_range, write_to_cell
-import sys
-from watchdog.observers import Observer
-from gui import Gui
+
 import googleapiclient.discovery
+from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
+
+from errors import handle_error
+from gui import Gui
+from sheets import create_service, read_sheet_range, validate_sheet_range, write_to_cell
 
 
 @dataclass
