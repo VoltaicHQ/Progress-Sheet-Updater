@@ -217,12 +217,11 @@ if __name__ == "__main__":
     stats = list(sorted(os.listdir(config['stats_path'])))
 
     update(config, scenarios, stats, blacklist)
-    if config['run_once']:
+    if config['run_mode'] == 'once':
         logging.info("Finished Updating, program will close in 3 seconds...")
         time.sleep(3)
         sys.exit()
-
-    if config['file_watcher_mode'] == 'watchdog':
+    elif config['run_mode'] == 'watchdog':
         event_handler = LambdaDispatchEventHandler(lambda: process_files())
         observer = Observer()
         observer.schedule(event_handler, config['stats_path'])
@@ -233,7 +232,7 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             observer.stop()
         observer.join()
-    elif config['file_watcher_mode'] == 'interval':
+    elif config['run_mode'] == 'interval':
         while True:
             process_files()
             try:
@@ -242,7 +241,7 @@ if __name__ == "__main__":
                 logging.debug('Received keyboard interrupt.')
                 break
     else:
-        logging.info("File watcher mode is not supported. Supported types are 'watchdog'/'interval'.")
+        logging.info("Run mode is not supported. Supported types are 'once'/'watchdog'/'interval'.")
 
     logging.info("Program will close in 3 seconds...")
     time.sleep(3)

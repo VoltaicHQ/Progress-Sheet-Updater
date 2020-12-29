@@ -13,10 +13,9 @@
 		"Intermediate Requirements!M3:M20",
 		"Advanced Requirements!M3:M20"
 	],
-	"run_once": true,
+	"run_mode": "once",
 	"calculate_averages": true,
 	"num_of_runs_to_average": 5,
 	"polling_interval": 60,
-	"file_watcher_mode": "watchdog",
 	"open_config": true
 }

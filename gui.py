@@ -10,27 +10,26 @@ class Gui:
         if self.config["open_config"]:
             self.window = Tk()
             self.window.title("Progress Sheet Updater - Configurator")
-            self.window.geometry("950x120")
+            self.window.geometry("800x120")
             self.path = StringVar()
             self.sheet_id = StringVar()
             self.calculate_averages = IntVar()
-            self.run_once = IntVar()
             self.polling_interval = IntVar()
             self.runs_to_average = IntVar()
             self.open_config = IntVar()
-            self.file_watcher_mode = StringVar()
+            self.run_mode = StringVar()
 
             # Give startvalue to variables
             self.calculate_averages.set(int(self.config["calculate_averages"]))
             self.sheet_id.set(self.config["sheet_id"])
-            self.run_once.set(int(self.config["run_once"]))
             self.polling_interval.set(int(self.config["polling_interval"]))
             self.path.set(self.config["stats_path"])
             self.runs_to_average.set(int(self.config["num_of_runs_to_average"]))
             self.open_config.set(int(self.config["open_config"]))
-            self.file_watcher_mode.set(self.config["file_watcher_mode"])
-            self.file_watcher_options = ["watchdog",
-                                         "interval"]
+            self.run_mode.set(self.config["run_mode"])
+            self.run_mode_options = ["once",
+                                     "watchdog",
+                                     "interval"]
 
     def browse_path(self):
         self.path.set(filedialog.askdirectory(initialdir=self.path.get(), title="Open Folder"))
@@ -44,11 +43,10 @@ class Gui:
             self.sheet_id.set(id_temp)
         self.config["sheet_id"] = self.sheet_id.get()
         self.config["calculate_averages"] = (self.calculate_averages.get() == 1)
-        self.config["run_once"] = (self.run_once.get() == 1)
         self.config["num_of_runs_to_average"] = self.runs_to_average.get()
         self.config["polling_interval"] = self.polling_interval.get()
         self.config["open_config"] = self.open_config.get() == 1
-        self.config["file_watcher_mode"] = self.file_watcher_mode.get()
+        self.config["run_mode"] = self.run_mode.get()
         with open("config.json", "w") as outfile:
             json.dump(self.config, outfile, indent=4)
         self.window.destroy()
@@ -78,9 +76,6 @@ class Gui:
             calculate_averages_box = Checkbutton(advanced_frame, variable=self.calculate_averages,
                                                  text="Calculate Averages")
             calculate_averages_box.pack(side="left", padx=advanced_padding)
-            # Run once
-            run_once_box = Checkbutton(advanced_frame, text="Run Once", variable=self.run_once)
-            run_once_box.pack(side="left", padx=advanced_padding)
             # Open config
             open_config_box = Checkbutton(advanced_frame, text="Open config", variable=self.open_config)
             open_config_box.pack(side="left", padx=advanced_padding)
@@ -98,9 +93,9 @@ class Gui:
             runs_to_average_entry.pack(side="left")
             runs_to_average_label.pack(side="left")
             runs_to_average_frame.pack(side="left", padx=advanced_padding)
-            # File watcher mode
-            file_watcher_dropdown = OptionMenu(advanced_frame, self.file_watcher_mode, *self.file_watcher_options)
-            file_watcher_dropdown.pack(side="left")
+            # Run mode
+            run_mode_dropdown = OptionMenu(advanced_frame, self.run_mode, *self.run_mode_options)
+            run_mode_dropdown.pack(side="left")
 
             # Finished button
             finished_frame = Frame(self.window)
