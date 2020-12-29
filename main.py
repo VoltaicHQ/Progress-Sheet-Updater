@@ -139,8 +139,8 @@ def init_version_blacklist():
     response = urllib.request.urlopen(url)
     lines = [l.decode('utf-8') for l in response.readlines()]
     blacklist = dict()
-    for l in lines[1:]:
-        splits = l.split('","')
+    for line in lines[1:]:
+        splits = line.split('","')
         name = splits[0].replace('"', '')
         date = datetime.strptime(splits[1].replace('"', '').replace('\n', ''), "%d.%m.%Y").date()
         blacklist[name.lower()] = date
