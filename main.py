@@ -134,21 +134,17 @@ def update(config: dict, scens: dict, files: list, blacklist: dict) -> None:
                 write_to_cell(sheet_api, config['sheet_id'], cell, scens[s].avg)
 
 
-def init_versionblacklist():
+def init_version_blacklist():
     url = 'https://docs.google.com/spreadsheets/d/1bwub3mY1S58hWsEVzcsuKgDxpCf-3BMXegDa_9cqv0A/gviz/tq?tqx=out:csv&sheet=Update_Dates'
     response = urllib.request.urlopen(url)
     lines = [l.decode('utf-8') for l in response.readlines()]
-    names = []
-    dates = []
     blacklist = dict()
-    for l in lines[2:]:
+    for l in lines[1:]:
         splits = l.split('","')
-        names.append(splits[0].replace('"', ''))
-        dates.append(datetime.strptime(splits[1].replace('"', '').replace('\n', ''), "%d.%m.%Y").date())
+        name = splits[0].replace('"', '')
+        date = datetime.strptime(splits[1].replace('"', '').replace('\n', ''), "%d.%m.%Y").date()
+        blacklist[name.lower()] = date
 
-    for name in names:
-        for date in dates:
-            blacklist[name.lower()] = date
     return blacklist
 
 
@@ -210,7 +206,7 @@ if __name__ == "__main__":
     sheet_api = create_service()
 
     logging.debug("Initializing version blacklist...")
-    blacklist = init_versionblacklist()
+    blacklist = init_version_blacklist()
 
     logging.debug("Initializing scenario data...")
     scenarios = init_scenario_data(config, sheet_api)
