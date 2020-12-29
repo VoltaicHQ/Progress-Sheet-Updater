@@ -1,3 +1,5 @@
+import logging
+import logging.config
 import csv
 import json
 import os
@@ -12,6 +14,7 @@ from sheets import create_service, read_sheet_range, validate_sheet_range, write
 import sys
 from watchdog.observers import Observer
 from gui import Gui
+import googleapiclient.discovery
 
 
 @dataclass
@@ -24,7 +27,7 @@ class Scenario:
     ids: list = field(default_factory=list)
 
 
-def cells_from_sheet_ranges(ranges):
+def cells_from_sheet_ranges(ranges: str):
     for r in ranges:
         m = validate_sheet_range(r)
         if m.group('col1') == m.group('col2'):
@@ -37,7 +40,7 @@ def cells_from_sheet_ranges(ranges):
             handle_error('range', val=r)
 
 
-def init_scenario_data(config, sheet_api):
+def init_scenario_data(config: dict, sheet_api: googleapiclient.discovery.Resource) -> dict:
     hs_cells_iter = cells_from_sheet_ranges(config['highscore_ranges'])
     avg_cells_iter = cells_from_sheet_ranges(config['average_ranges'])
 
@@ -72,7 +75,7 @@ def init_scenario_data(config, sheet_api):
     return scens
 
 
-def read_score_from_file(file_path):
+def read_score_from_file(file_path: str) -> float:
     with open(file_path, newline='') as csvfile:
         for row in csv.reader(csvfile):
             if row and row[0] == 'Score:':
@@ -80,7 +83,7 @@ def read_score_from_file(file_path):
     return 0.0
 
 
-def update(config, scens, files, blacklist):
+def update(config: dict, scens: dict, files: list, blacklist: dict) -> None:
     new_hs = set()
     new_avgs = set()
 
@@ -112,23 +115,21 @@ def update(config, scens, files, blacklist):
                 new_avgs.add(s)
 
     # Pretty output and update progress sheet
-    time = datetime.now()
-
     if not new_hs and not new_avgs:
-        print(f'[{time:%H:%M:%S}] Your progress sheet is up-to-date')
+        logging.info('Your progress sheet is up-to-date.')
         return
 
     if new_hs:
-        print(f'[{time:%H:%M:%S}] New Highscore{"s" if len(new_hs) > 1 else ""}')
+        logging.info(f'New Highscore{"s" if len(new_hs) > 1 else ""}')
         for s in new_hs:
-            print(f'{scens[s].hs:>10} - {s}')
+            logging.info(f'{scens[s].hs:>10} - {s}')
             for cell in scens[s].hs_cells:
                 write_to_cell(sheet_api, config['sheet_id'], cell, scens[s].hs)
 
     if new_avgs:
-        print(f'[{time:%H:%M:%S}] New Average{"s" if len(new_hs) > 1 else ""}')
+        logging.info(f' New Average{"s" if len(new_hs) > 1 else ""}')
         for s in new_avgs:
-            print(f'{scens[s].avg:>10} - {s}')
+            logging.info(f'{scens[s].avg:>10} - {s}')
             for cell in scens[s].avg_cells:
                 write_to_cell(sheet_api, config['sheet_id'], cell, scens[s].avg)
 
@@ -186,15 +187,6 @@ def debounce(wait):
     return decorator
 
 
-gui = Gui()
-gui.main()
-config = json.load(open('config.json', 'r'))
-sheet_api = create_service()
-blacklist = init_versionblacklist()
-scenarios = init_scenario_data(config, sheet_api)
-stats = list(sorted(os.listdir(config['stats_path'])))
-
-
 @debounce(5)
 def process_files():
     global config, sheet_api, blacklist, scenarios, stats
@@ -205,32 +197,53 @@ def process_files():
     stats = new_stats
 
 
-update(config, scenarios, stats, blacklist)
+if __name__ == "__main__":
+    logging.config.fileConfig('logging.conf')
 
-if config['run_once']:
-    print("Flag run_once is active.")
-    print("Finished Updating, program will close in 3 seconds...")
+    gui = Gui()
+    gui.main()
+
+    config = json.load(open('config.json', 'r'))
+    logging.debug(json.dumps(config, indent=2))
+
+    logging.debug("Creating service...")
+    sheet_api = create_service()
+
+    logging.debug("Initializing version blacklist...")
+    blacklist = init_versionblacklist()
+
+    logging.debug("Initializing scenario data...")
+    scenarios = init_scenario_data(config, sheet_api)
+    stats = list(sorted(os.listdir(config['stats_path'])))
+
+    update(config, scenarios, stats, blacklist)
+    if config['run_once']:
+        logging.info("Finished Updating, program will close in 3 seconds...")
+        time.sleep(3)
+        sys.exit()
+
+    if config['file_watcher_mode'] == 'watchdog':
+        event_handler = LambdaDispatchEventHandler(lambda: process_files())
+        observer = Observer()
+        observer.schedule(event_handler, config['stats_path'])
+        observer.start()
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            observer.stop()
+        observer.join()
+    elif config['file_watcher_mode'] == 'interval':
+        while True:
+            process_files()
+            try:
+                time.sleep(max(config['polling_interval'], 30))
+            except KeyboardInterrupt:
+                logging.debug('Received keyboard interrupt.')
+                break
+    else:
+        logging.info("File watcher mode is not supported. Supported types are 'watchdog'/'interval'.")
+
+    logging.info("Program will close in 3 seconds...")
     time.sleep(3)
     sys.exit()
-
-if config['file_watcher_mode'] == 'watchdog':
-    event_handler = LambdaDispatchEventHandler(lambda: process_files())
-    observer = Observer()
-    observer.schedule(event_handler, config['stats_path'])
-    observer.start()
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        observer.stop()
-    observer.join()
-elif config['file_watcher_mode'] == 'interval':
-    while True:
-        process_files()
-        time.sleep(max(config['polling_interval'], 30))
-else:
-    print("File watcher mode is not supported. Supported types are 'watchdog'/'interval'.")
-
-print("Program will close in 3 seconds...")
-time.sleep(3)
-sys.exit()
