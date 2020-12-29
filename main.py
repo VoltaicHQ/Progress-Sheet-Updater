@@ -1,6 +1,3 @@
-import logging
-import logging.config
-
 import csv
 import json
 import os
@@ -8,11 +5,13 @@ import urllib.request
 import time
 from dataclasses import dataclass, field
 from datetime import datetime
+from threading import Timer
+from watchdog.events import FileSystemEventHandler
 from errors import handle_error
 from sheets import create_service, read_sheet_range, validate_sheet_range, write_to_cell
-from gui import Gui
 import sys
-import googleapiclient.discovery
+from watchdog.observers import Observer
+from gui import Gui
 
 
 @dataclass
@@ -25,7 +24,7 @@ class Scenario:
     ids: list = field(default_factory=list)
 
 
-def cells_from_sheet_ranges(ranges: str):
+def cells_from_sheet_ranges(ranges):
     for r in ranges:
         m = validate_sheet_range(r)
         if m.group('col1') == m.group('col2'):
@@ -38,7 +37,7 @@ def cells_from_sheet_ranges(ranges: str):
             handle_error('range', val=r)
 
 
-def init_scenario_data(config: dict, sheet_api: googleapiclient.discovery.Resource) -> dict:
+def init_scenario_data(config, sheet_api):
     hs_cells_iter = cells_from_sheet_ranges(config['highscore_ranges'])
     avg_cells_iter = cells_from_sheet_ranges(config['average_ranges'])
 
@@ -73,7 +72,7 @@ def init_scenario_data(config: dict, sheet_api: googleapiclient.discovery.Resour
     return scens
 
 
-def read_score_from_file(file_path: str) -> float:
+def read_score_from_file(file_path):
     with open(file_path, newline='') as csvfile:
         for row in csv.reader(csvfile):
             if row and row[0] == 'Score:':
@@ -81,7 +80,7 @@ def read_score_from_file(file_path: str) -> float:
     return 0.0
 
 
-def update(config: dict, scens: dict, files: list, blacklist: dict) -> None:
+def update(config, scens, files, blacklist):
     new_hs = set()
     new_avgs = set()
 
@@ -113,21 +112,23 @@ def update(config: dict, scens: dict, files: list, blacklist: dict) -> None:
                 new_avgs.add(s)
 
     # Pretty output and update progress sheet
+    time = datetime.now()
+
     if not new_hs and not new_avgs:
-        logging.info('Your progress sheet is up-to-date.')
+        print(f'[{time:%H:%M:%S}] Your progress sheet is up-to-date')
         return
 
     if new_hs:
-        logging.info(f'New Highscore{"s" if len(new_hs) > 1 else ""}')
+        print(f'[{time:%H:%M:%S}] New Highscore{"s" if len(new_hs) > 1 else ""}')
         for s in new_hs:
-            logging.info(f'{scens[s].hs:>10} - {s}')
+            print(f'{scens[s].hs:>10} - {s}')
             for cell in scens[s].hs_cells:
                 write_to_cell(sheet_api, config['sheet_id'], cell, scens[s].hs)
 
     if new_avgs:
-        logging.info(f' New Average{"s" if len(new_hs) > 1 else ""}')
+        print(f'[{time:%H:%M:%S}] New Average{"s" if len(new_hs) > 1 else ""}')
         for s in new_avgs:
-            logging.info(f'{scens[s].avg:>10} - {s}')
+            print(f'{scens[s].avg:>10} - {s}')
             for cell in scens[s].avg_cells:
                 write_to_cell(sheet_api, config['sheet_id'], cell, scens[s].avg)
 
@@ -139,7 +140,7 @@ def init_versionblacklist():
     names = []
     dates = []
     blacklist = dict()
-    for l in lines[1:]:
+    for l in lines[2:]:
         splits = l.split('","')
         names.append(splits[0].replace('"', ''))
         dates.append(datetime.strptime(splits[1].replace('"', '').replace('\n', ''), "%d.%m.%Y").date())
@@ -150,38 +151,86 @@ def init_versionblacklist():
     return blacklist
 
 
-if __name__ == "__main__":
-    logging.config.fileConfig('logging.conf')
+class LambdaDispatchEventHandler(FileSystemEventHandler):
 
-    gui = Gui()
-    gui.main()
+    def __init__(self, func):
+        self.func = func
 
-    config = json.load(open('config.json', 'r'))
-    logging.debug(json.dumps(config, indent=2))
+    def on_any_event(self, event):
+        if event.is_directory:
+            return None
+        elif event.event_type == 'modified':
+            self.func()
 
-    logging.debug("Creating service...")
-    sheet_api = create_service()
 
-    logging.debug("Initializing version blacklist...")
-    blacklist = init_versionblacklist()
+def debounce(wait):
+    """ Decorator that will postpone a functions
+        execution until after wait seconds
+        have elapsed since the last time it was invoked.
+        https://gist.github.com/walkermatt/2871026 """
 
-    logging.debug("Initializing scenario data...")
-    scenarios = init_scenario_data(config, sheet_api)
-    stats = list(sorted(os.listdir(config['stats_path'])))
+    def decorator(fn):
+        def debounced(*args, **kwargs):
+            def call_it():
+                fn(*args, **kwargs)
 
-    update(config, scenarios, stats, blacklist)
-    if config['run_once']:
-        logging.info("Finished Updating, program will close in 3 seconds...")
-        time.sleep(3)
-        sys.exit()
+            try:
+                debounced.t.cancel()
+            except AttributeError:
+                pass
+            debounced.t = Timer(wait, call_it)
+            debounced.t.start()
 
+        return debounced
+
+    return decorator
+
+
+gui = Gui()
+gui.main()
+config = json.load(open('config.json', 'r'))
+sheet_api = create_service()
+blacklist = init_versionblacklist()
+scenarios = init_scenario_data(config, sheet_api)
+stats = list(sorted(os.listdir(config['stats_path'])))
+
+
+@debounce(5)
+def process_files():
+    global config, sheet_api, blacklist, scenarios, stats
+
+    new_stats = os.listdir(config['stats_path'])
+    unprocessed = list(sorted([f for f in new_stats if f not in stats]))
+    update(config, scenarios, unprocessed, blacklist)
+    stats = new_stats
+
+
+update(config, scenarios, stats, blacklist)
+
+if config['run_once']:
+    print("Flag run_once is active.")
+    print("Finished Updating, program will close in 3 seconds...")
+    time.sleep(3)
+    sys.exit()
+
+if config['file_watcher_mode'] == 'watchdog':
+    event_handler = LambdaDispatchEventHandler(lambda: process_files())
+    observer = Observer()
+    observer.schedule(event_handler, config['stats_path'])
+    observer.start()
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        observer.stop()
+    observer.join()
+elif config['file_watcher_mode'] == 'interval':
     while True:
-        new_stats = os.listdir(config['stats_path'])
-        unprocessed = list(sorted([f for f in new_stats if f not in stats]))
-        update(config, scenarios, unprocessed, blacklist)
-        stats = new_stats
-        try:
-            time.sleep(max(config['polling_interval'], 30))
-        except KeyboardInterrupt:
-            logging.debug('Got keyboard interrupt. Terminating...')
-            break
+        process_files()
+        time.sleep(max(config['polling_interval'], 30))
+else:
+    print("File watcher mode is not supported. Supported types are 'watchdog'/'interval'.")
+
+print("Program will close in 3 seconds...")
+time.sleep(3)
+sys.exit()

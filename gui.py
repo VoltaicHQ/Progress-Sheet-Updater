@@ -100,3 +100,6 @@ class Gui:
         finished_frame.pack(fill="x")
         self.window.mainloop()
 
+
+test = Gui()
+test.main()

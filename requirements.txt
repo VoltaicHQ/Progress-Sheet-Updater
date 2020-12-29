@@ -2,3 +2,4 @@ google_auth_oauthlib==0.4.2
 google_api_python_client==1.12.8
 protobuf==3.14.0
 pyinstaller==4.1
+watchdog==1.0.2
