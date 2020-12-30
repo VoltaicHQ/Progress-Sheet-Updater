@@ -9,7 +9,7 @@ def handle_error(error_type, val=''):
                       'range_size': 'Range size mismatched, check that each list of ranges in config.json have the same number of cells referenced.',
                       'sheets_api': f'Sheets API error: {val}',
                       'stats_path': f'Could not find the folder: {val}',
-                      'unknown': 'An unknown error occured.'
+                      'unknown': 'An unknown error occurred.'
                   }.get(error_type, 'unknown'))
 
     input("Press 'Enter' to exit...")
