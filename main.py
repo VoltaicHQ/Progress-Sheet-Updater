@@ -198,10 +198,16 @@ def process_files():
 if __name__ == "__main__":
     logging.config.fileConfig('logging.conf')
 
-    gui = Gui()
+    config_file = 'config.json'
+    if not os.path.isfile(config_file):
+        logging.error("Failed to find config file: %s", config_file)
+        sys.exit(1)
+
+    config = json.load(open(config_file, 'r'))
+    gui = Gui(**config)
     gui.main()
 
-    config = json.load(open('config.json', 'r'))
+    config = json.load(open(config_file, 'r'))
     logging.debug(json.dumps(config, indent=2))
 
     logging.debug("Creating service...")

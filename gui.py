@@ -4,9 +4,9 @@ from tkinter import filedialog
 
 
 class Gui:
-    def __init__(self):
+    def __init__(self, **kwargs):
         # Read config and initialize Variables for Gui
-        self.config = json.load(open('config.json', 'r'))
+        self.config = kwargs
         if self.config["open_config"]:
             self.window = Tk()
             self.window.title("Progress Sheet Updater - Configurator")
