@@ -207,8 +207,13 @@ if __name__ == "__main__":
     gui = Gui(**config)
     gui.main()
 
-    config = json.load(open(config_file, 'r'))
-    logging.debug(json.dumps(config, indent=2))
+    try:
+        config = json.load(open(config_file, 'r'))
+        logging.debug(json.dumps(config, indent=2))
+    except Exception as err:
+        logging.debug(json.dumps(config, indent=2))
+        handle_error('no_credentials')
+
 
     logging.debug("Creating service...")
     sheet_api = create_service()

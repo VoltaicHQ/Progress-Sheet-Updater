@@ -10,7 +10,7 @@ class Gui:
         if self.config["open_config"]:
             self.window = Tk()
             self.window.title("Progress Sheet Updater - Configurator")
-            self.window.geometry("800x120")
+            self.window.geometry("890x400")
             self.path = StringVar()
             self.sheet_id = StringVar()
             self.calculate_averages = IntVar()
@@ -18,6 +18,13 @@ class Gui:
             self.runs_to_average = IntVar()
             self.open_config = IntVar()
             self.run_mode = StringVar()
+
+            # Initialize Rangelists
+            self.name_ranges_entries = []
+            self.highscore_ranges_entries = []
+            self.average_ranges_entries = []
+            self.range_frame_list = []
+            self.all_ranges_frame = Frame(self.window)
 
             # Give startvalue to variables
             self.calculate_averages.set(int(self.config["calculate_averages"]))
@@ -34,6 +41,31 @@ class Gui:
     def browse_path(self):
         self.path.set(filedialog.askdirectory(initialdir=self.path.get(), title="Open Folder"))
 
+    def new_range(self):
+        self.range_frame_list.append(Frame(self.all_ranges_frame, padx=20))
+        # Labels
+        header_label = Label(self.range_frame_list[-1], text="Range Number: " + str(len(self.range_frame_list)))
+        name_label = Label(self.range_frame_list[-1], text="Name Range: ")
+        hs_label = Label(self.range_frame_list[-1], text="Highscore Range: ")
+        average_label = Label(self.range_frame_list[-1], text="Average Range: ")
+        # Add new entries
+        self.name_ranges_entries.append(Entry(self.range_frame_list[-1], width=32))
+        self.highscore_ranges_entries.append(Entry(self.range_frame_list[-1], width=32))
+        self.average_ranges_entries.append(Entry(self.range_frame_list[-1], width=32))
+        # Pack new entries
+        header_label.grid(row="0", column="0", columnspan="2")
+        name_label.grid(row="1", column="0")
+        self.name_ranges_entries[-1].grid(row="1", column="1")
+        hs_label.grid(row="2", column="0")
+        self.highscore_ranges_entries[-1].grid(row="2", column="1")
+        average_label.grid(row="3", column="0")
+        self.average_ranges_entries[-1].grid(row="3", column="1")
+        self.range_frame_list[-1].grid(row=(len(self.range_frame_list)-1) // 3, column=(len(self.range_frame_list)-1) % 3)
+
+    def delete_range(self):
+        self.range_frame_list[-1].destroy()
+        self.range_frame_list.pop()
+
     def finished(self):
         self.config["stats_path"] = self.path.get()
         if self.sheet_id.get().find("docs.google.com") != -1:
@@ -47,6 +79,9 @@ class Gui:
         self.config["polling_interval"] = self.polling_interval.get()
         self.config["open_config"] = self.open_config.get() == 1
         self.config["run_mode"] = self.run_mode.get()
+        self.config["scenario_name_ranges"] = [entry.get() for entry in self.name_ranges_entries]
+        self.config["highscore_ranges"] = [entry.get() for entry in self.highscore_ranges_entries]
+        self.config["average_ranges"] = [entry.get() for entry in self.average_ranges_entries]
         with open("config.json", "w") as outfile:
             json.dump(self.config, outfile, indent=4)
         self.window.destroy()
@@ -94,13 +129,49 @@ class Gui:
             runs_to_average_label.pack(side="left")
             runs_to_average_frame.pack(side="left", padx=advanced_padding)
             # Run mode
+            run_mode_frame = Frame(advanced_frame)
+            run_mode_label = Label(advanced_frame, text="Run Mode")
             run_mode_dropdown = OptionMenu(advanced_frame, self.run_mode, *self.run_mode_options)
+            run_mode_label.pack(side="left")
             run_mode_dropdown.pack(side="left")
+            run_mode_frame.pack(side="left", padx=advanced_padding)
 
-            # Finished button
+            # Ranges
+            i = 0
+            while i < len(self.config["scenario_name_ranges"]):
+                self.range_frame_list.append(Frame(self.all_ranges_frame, padx=10))
+                # Labels
+                header_label = Label(self.range_frame_list[i], text="Range Number: "+str(i+1))
+                name_label = Label(self.range_frame_list[i], text="Name Range: ")
+                hs_label = Label(self.range_frame_list[i], text="Highscore Range: ")
+                average_label = Label(self.range_frame_list[i], text="Average Range: ")
+                # Add new entries
+                self.name_ranges_entries.append(Entry(self.range_frame_list[i], width=32))
+                self.highscore_ranges_entries.append(Entry(self.range_frame_list[i], width=32))
+                self.average_ranges_entries.append(Entry(self.range_frame_list[i], width=32))
+                # Set value of entries
+                self.name_ranges_entries[i].insert(0, self.config["scenario_name_ranges"][i])
+                self.highscore_ranges_entries[i].insert(0, self.config["highscore_ranges"][i])
+                self.average_ranges_entries[i].insert(0, self.config["average_ranges"][i])
+                # Pack entries
+                header_label.grid(row="0", column="0", columnspan="2")
+                name_label.grid(row="1", column="0")
+                self.name_ranges_entries[i].grid(row="1", column="1")
+                hs_label.grid(row="2", column="0")
+                self.highscore_ranges_entries[i].grid(row="2", column="1")
+                average_label.grid(row="3", column="0")
+                self.average_ranges_entries[i].grid(row="3", column="1")
+                self.range_frame_list[i].grid(row=i//3, column=i % 3)
+                i += 1
+
+            # Finished/New Range/Delete Range buttons
             finished_frame = Frame(self.window)
+            new_range_button = Button(finished_frame, command=self.new_range, text="Add Range")
+            new_range_button.grid(row="0", column="0", columnspan="2")
+            del_range_button = Button(finished_frame, command=self.delete_range, text="Remove Range")
+            del_range_button.grid(row="0", column="2", columnspan="2")
             finished_button = Button(finished_frame, command=self.finished, text="Finish")
-            finished_button.pack()
+            finished_button.grid(row="1", column="1", columnspan="2")
 
             # Pack all frames and run mainloop
             path_frame.pack(fill="x")
@@ -108,5 +179,6 @@ class Gui:
             advanced_label = Label(self.window, text="Advanced Settings")
             advanced_label.pack()
             advanced_frame.pack(fill="x")
-            finished_frame.pack(fill="x")
+            self.all_ranges_frame.pack(fill="x")
+            finished_frame.pack()
             self.window.mainloop()
