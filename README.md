@@ -32,7 +32,7 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
 
 ![Sheet ID from URL](/readmeimages/sheet_id_from_url.png) 
 
-Replace the placeholder `sheed_id` text with your sheet's ID. Save and close the file.
+Replace the placeholder `sheet_id` text with your sheet's ID. Save and close the file.
 
 ```
 {
