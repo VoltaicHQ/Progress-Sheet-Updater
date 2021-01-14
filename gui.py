@@ -65,6 +65,9 @@ class Gui:
     def delete_range(self):
         self.range_frame_list[-1].destroy()
         self.range_frame_list.pop()
+        self.name_ranges_entries.pop()
+        self.highscore_ranges_entries.pop()
+        self.average_ranges_entries.pop()
 
     def finished(self):
         self.config["stats_path"] = self.path.get()
