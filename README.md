@@ -28,27 +28,27 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
     <img alt="Folder contents before oauth" src="readmeimages/folder_contents_before_auth.png">
 </p>
 
-3. Open `config.json` with Notepad (right-click it -> Open with -> Notepad) or your text editor of choice. Copy your sheet's ID from the URL of your progress sheet. The ID is highlighted in the sample image below. 
+3. Run `ProgressSheetUpdater.exe`. A GUI will open, this GUI is used to edit the configuration of the program.
+    
+    1. Click the `Browse`-Button on the top left and navigate to your Kovaak's stats folder.
+    2. Paste the link to your Progress Sheet into the entryfield.
+    3. Check the settings that you wish to use.  
+        `Calculate Averages`: The Program will calculate and fill the average columns  
+        `Open Config`: The GUI window will open when the program is started (if you disable this you have to manually reenable it by editing the `config.json`)  
+        `Polling Interval`: Time between updates when using the `interval` Run Mode  
+        `Number of runs to average`: Amount of runs used to calculate the averages  
+        `Run Mode`: Types of updating the scores  
+         1. `once`: Program will run once and then close  
+         2. `watchdog`: Program will update sheet once a new score is added  
+         3. `interval`: Program will update sheet once every x seconds  
+        `Add/Remove Range`: Used to add/remove scenarios to track, it is recommended to not change this setting unless you know what you are doing  
 
-![Sheet ID from URL](/readmeimages/sheet_id_from_url.png) 
+    4. The first time you run the program you will be prompted to:
 
-Replace the placeholder `sheed_id` text with your sheet's ID. Save and close the file.
-
-```
-{
-    ...
-    "sheet_id": "175i2Us2Vyi3eauSe5rWE94KE4DmIJE_iusa2d4OvC3E",
-    ...
-}
-```
-If your steam library is not installed in the default folder location then you will need to edit the `stats_path` as well.
-
-5. Run `ProgressSheetUpdater.exe`. The first time you do so you will be prompted to:
-
-    1. Choose the account that owns your progress sheet.
-    2. Click `Advanced` in the bottom-left, then `Go to Quickstart (unsafe)`.
-    3. Click `Allow`.
-    4. Click `Allow` again. A file called `token.pickle` will be saved to avoid future prompts.
+        1. Choose the account that owns your progress sheet.
+        2. Click `Advanced` in the bottom-left, then `Go to Quickstart (unsafe)`.
+        3. Click `Allow`.
+        4. Click `Allow` again. A file called `token.pickle` will be saved to avoid future prompts.
 
 ## Build It Yourself
 
