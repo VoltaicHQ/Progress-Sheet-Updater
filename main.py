@@ -112,7 +112,8 @@ def update(config: dict, scens: dict, files: list, blacklist: dict) -> None:
     if config['calculate_averages']:
         for s in scens:
             runs = scens[s].recent_scores
-            if runs and (new_avg := round(sum(runs) / len(runs), 1)) != scens[s].avg:
+            new_avg = round(sum(runs) / len(runs), 1)
+            if runs and new_avg != scens[s].avg:
                 scens[s].avg = new_avg
                 new_avgs.add(s)
 
