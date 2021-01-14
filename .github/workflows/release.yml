@@ -20,4 +20,4 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: ProgressSheetUpdater.exe
-        path: src/dist/windows
+        path: dist/windows
