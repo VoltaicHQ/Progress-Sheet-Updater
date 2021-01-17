@@ -49,6 +49,10 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
         2. Click `Advanced` in the bottom-left, then `Go to Quickstart (unsafe)`.
         3. Click `Allow`.
         4. Click `Allow` again. A file called `token.pickle` will be saved to avoid future prompts.
+        
+## Updating to v1.1
+ If you already used version 1.0 and now want to update, you can download the new release, and move over the `token.pickle`  
+ and the `credentials.json` from your old folder to the new one. Make sure that you use the new `config.json`.
 
 ## Build It Yourself
 
