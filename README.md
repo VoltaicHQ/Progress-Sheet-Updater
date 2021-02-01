@@ -30,7 +30,7 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
 
 3. Run `ProgressSheetUpdater.exe`. A GUI will open, this GUI is used to edit the configuration of the program.
     
-    1. Click the `Browse`-Button on the top left and navigate to your Kovaak's stats folder.
+    1. Click the `Browse`-Button on the top right and navigate to your Kovaak's stats folder.
     2. Paste the link to your Progress Sheet into the entryfield.
     3. Check the settings that you wish to use.  
         `Calculate Averages`: The Program will calculate and fill the average columns  
