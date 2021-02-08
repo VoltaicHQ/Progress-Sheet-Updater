@@ -22,7 +22,7 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
     2. Click `Next` in the bottom-right.
     3. Click `Create` in the bottom-right.
     4. Click the blue `DOWNLOAD CLIENT CONFIGURATION` button.
-    5. Move the downloaded `credentials.json` file into the extracted folder, alongside `ProgressSheetUpdater.exe` and `config.json`. Like so:
+    5. Move the downloaded `credentials.json` file into the extracted folder (make sure to not rename it), alongside `ProgressSheetUpdater.exe` and `config.json`. Like so:
     
 <p align="center">
     <img alt="Folder contents before oauth" src="readmeimages/folder_contents_before_auth.png">
