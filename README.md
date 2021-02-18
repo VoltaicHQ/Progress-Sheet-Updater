@@ -12,6 +12,9 @@ Run it before checking your progress sheet, or leave it running in the backgroun
 Easily keep track of additional scenarios beyond the scope of the Voltaic Benchmarks through the configuration file.
 
 ## Quickstart Guide
+
+####    This Guide is also available as a [video](https://youtu.be/BDUUy-ajyrk)
+
 1. Make a copy of the [Voltaic Benchmark Progress Sheet](https://docs.google.com/spreadsheets/d/1L6iCXTaSheZtVwtVR4b_FYJzcCZbEYVRsdFo7PI3HTk/) if you don't already have one. This requires a Google account.
 
 2. Download and extract the latest release of this tool from [here](https://github.com/VoltaicHQ/Progress-Sheet-Updater/releases). I recommend [7zip](https://www.7-zip.org/) for extracting zip files.
