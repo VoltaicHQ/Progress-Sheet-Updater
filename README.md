@@ -80,7 +80,7 @@ $ pip install -r requirements.txt
 </p>
 
 3. Update `config.json`. 
-We need to update stats_path and sheet_id
+We need to update `stats_path` and `sheet_id`
 The default stats directory on linux will be `~/.local/share/Steam/steamapps/common/FPSAimTrainer/FPSAimTrainer/stats/`
 `sheet_id` will be the part of your sheet's link, after `/d/`
 
@@ -99,14 +99,13 @@ python3 main.py
     cd ~/
     nano VoltaicUpdater
     ```
-    2. Paste this into the script
+    2. Paste this into the script. (With nano, you can hit `ctrl+o` to write the file.)
     ```bash
     #!/bin/bash
     cd ~/Progress-Sheet-Updater # Change this to the directory you cloned, this assumes it's in your home directory.
     source env/bin/activate
     python3 main.py
     ```
-    With nano, you can hit `ctrl+o` to write the file.
     3. Make the file executable
     ```bash
     sudo chmod +x VoltaicUpdater
