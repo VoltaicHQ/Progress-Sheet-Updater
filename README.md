@@ -76,11 +76,17 @@ $ pip install -r requirements.txt
     5. Move the downloaded `credentials.json` file into the extracted folder (make sure to not rename it), alongside `config.json`. Like so:
     
 <p align="center">
-    <img alt="Folder contents before oauth" src="readmeimages/folder_contents_before_auth_linux.png">
+    <img alt="Folder contents before oauth Linux" src="readmeimages/folder_contents_before_auth_linux.png">
 </p>
 
 3. Update config.json. 
+We need to update stats_path and sheet_id
 The default stats directory on linux will be `~/.local/share/Steam/steamapps/common/FPSAimTrainer/FPSAimTrainer/stats/`
+`sheet_id` will be the part of your sheet's link, after `/d/`
+
+<p align="center">
+    <img alt="Sheet id from url" src="readmeimages/sheet_id_from_url.png">
+</p>
 
 ## Updating to v1.1
  If you already used version 1.0 and now want to update, you can download the new release, and move over the `token.pickle`  
