@@ -13,13 +13,15 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
 
 ## Quickstart Guide
 
+### Windows
+
 ####    This Guide is also available as a [video](https://youtu.be/BDUUy-ajyrk)
 
 1. Make a copy of the [Voltaic Benchmark Progress Sheet](https://docs.google.com/spreadsheets/d/1L6iCXTaSheZtVwtVR4b_FYJzcCZbEYVRsdFo7PI3HTk/) if you don't already have one. This requires a Google account.
 
 2. Download and extract the latest release of this tool from [here](https://github.com/VoltaicHQ/Progress-Sheet-Updater/releases). I recommend [7zip](https://www.7-zip.org/) for extracting zip files.
 
-2. Go [here](https://developers.google.com/sheets/api/quickstart/python#step_1_turn_on_the), and ensure you are logged in to the same Google Account that owns your progress sheet. Then:
+3. Go [here](https://developers.google.com/sheets/api/quickstart/python#step_1_turn_on_the), and ensure you are logged in to the same Google Account that owns your progress sheet. Then:
 
     1. Click the blue `Enable Google Sheets API` button.
     2. Click `Next` in the bottom-right.
@@ -52,7 +54,34 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
         2. Click `Advanced` in the bottom-left, then `Go to Quickstart (unsafe)`.
         3. Click `Allow`.
         4. Click `Allow` again. A file called `token.pickle` will be saved to avoid future prompts.
-        
+
+### Linux/Other With python 3.7+
+
+1. Setup the python script:
+```bash
+$ git clone https://github.com/AverytheFurry/Progress-Sheet-Updater.git
+$ cd Progress-Sheet-Updater
+$ python3 -m pip install --user virtualenv
+$ python3 -m venv env
+$ source env/bin/activate
+$ pip install -r requirements.txt
+```
+
+2. Go [here](https://developers.google.com/sheets/api/quickstart/python#step_1_turn_on_the), and ensure you are logged in to the same Google Account that owns your progress sheet. Then:
+
+    1. Click the blue `Enable Google Sheets API` button.
+    2. Click `Next` in the bottom-right.
+    3. Click `Create` in the bottom-right.
+    4. Click the blue `DOWNLOAD CLIENT CONFIGURATION` button.
+    5. Move the downloaded `credentials.json` file into the extracted folder (make sure to not rename it), alongside `config.json`. Like so:
+    
+<p align="center">
+    <img alt="Folder contents before oauth" src="readmeimages/folder_contents_before_auth_linux.png">
+</p>
+
+3. Update config.json. 
+The default stats directory on linux will be `~/.local/share/Steam/steamapps/common/FPSAimTrainer/FPSAimTrainer/stats/`
+
 ## Updating to v1.1
  If you already used version 1.0 and now want to update, you can download the new release, and move over the `token.pickle`  
  and the `credentials.json` from your old folder to the new one. Make sure that you use the new `config.json`.

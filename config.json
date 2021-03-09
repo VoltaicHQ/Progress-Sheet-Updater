@@ -1,0 +1,21 @@
+{
+    "stats_path": "",
+    "sheet_id": "",
+    "scenario_name_ranges": [
+        "Intermediate Requirements!E3:E20",
+        "Advanced Requirements!E3:E20"
+    ],
+    "highscore_ranges": [
+        "Intermediate Requirements!G3:G20",
+        "Advanced Requirements!G3:G20"
+    ],
+    "average_ranges": [
+        "Intermediate Requirements!M3:M20",
+        "Advanced Requirements!M3:M20"
+    ],
+    "run_mode": "watchdog",
+    "calculate_averages": true,
+    "num_of_runs_to_average": 5,
+    "polling_interval": 60,
+    "open_config": true
+}
