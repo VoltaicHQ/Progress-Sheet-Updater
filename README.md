@@ -79,7 +79,7 @@ $ pip install -r requirements.txt
     <img alt="Folder contents before oauth Linux" src="readmeimages/folder_contents_before_auth_linux.png">
 </p>
 
-3. Update config.json. 
+3. Update `config.json`. 
 We need to update stats_path and sheet_id
 The default stats directory on linux will be `~/.local/share/Steam/steamapps/common/FPSAimTrainer/FPSAimTrainer/stats/`
 `sheet_id` will be the part of your sheet's link, after `/d/`
@@ -87,6 +87,34 @@ The default stats directory on linux will be `~/.local/share/Steam/steamapps/com
 <p align="center">
     <img alt="Sheet id from url" src="readmeimages/sheet_id_from_url.png">
 </p>
+
+4. Finally, run the program!
+```bash
+python3 main.py
+```
+
+5. If you'd like to make running the program easier, follow these steps to make a simple bash script!
+    1. Create the script
+    ```bash
+    cd ~/
+    nano VoltaicUpdater
+    ```
+    2. Paste this into the script
+    ```bash
+    #!/bin/bash
+    cd ~/Progress-Sheet-Updater # Change this to the directory you cloned, this assumes it's in your home directory.
+    source env/bin/activate
+    python3 main.py
+    ```
+    With nano, you can hit `ctrl+o` to write the file.
+    3. Make the file executable
+    ```bash
+    sudo chmod +x VoltaicUpdater
+    ```
+    4. Run the script any time you want to run the program!
+    ```bash
+    ./VoltaicUpdater
+    ```
 
 ## Updating to v1.1
  If you already used version 1.0 and now want to update, you can download the new release, and move over the `token.pickle`  
