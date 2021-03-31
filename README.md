@@ -19,13 +19,29 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
 
 2. Download and extract the latest release of this tool from [here](https://github.com/VoltaicHQ/Progress-Sheet-Updater/releases). I recommend [7zip](https://www.7-zip.org/) for extracting zip files.
 
-2. Go [here](https://developers.google.com/sheets/api/quickstart/python#step_1_turn_on_the), and ensure you are logged in to the same Google Account that owns your progress sheet. Then:
+2. Go [here](https://developers.google.com/workspace/guides/create-project), and ensure you are logged in to the same Google Account that owns your progress sheet. Then:
+    Since Google has updated their site this now takes more work than before.
 
-    1. Click the blue `Enable Google Sheets API` button.
-    2. Click `Next` in the bottom-right.
-    3. Click `Create` in the bottom-right.
-    4. Click the blue `DOWNLOAD CLIENT CONFIGURATION` button.
-    5. Move the downloaded `credentials.json` file into the extracted folder (make sure to not rename it), alongside `ProgressSheetUpdater.exe` and `config.json`. Like so:
+    1. Follow the steps of the upper guide, you dont need to enable the `Google Sheets API` since it is enabled by default
+    2. Click the `menu button` on the top left
+    3. Choose `APIs & Services`
+    4. Choose `Google Sheets API` from the list of APIs in the bottom
+    5. Click the `Create Credentials` button on the middle right
+    6. Choose the `Google Sheets API`
+    7. Choose `Other UI`
+    8. Choose `User data`
+    9. Click `What credentials do I need?`
+    10. Click `SET UP CONSENT SCREEN`
+    11. Choose `external`
+    12. Enter the information (don't worry only you will be able to see whatever u enter)
+    13. Click `ADD OR REMOVE SCOPES`, then paste `https://www.googleapis.com/auth/spreadsheets` into the textfield on the bottom and click `ADD TO TABLE`
+    14. Click `UPDATE`, then click `SAVE AND CONTINUE`
+    15. Click `ADD USERS` and add ur email address into the Test users and save the changes
+    16. Choose `Credentials` in the bar on the right
+    17. Press `CREATE CREDENTIALS`, choose `OAuth client ID`
+    18. Choose `Desktop app`, give it a name and click `CREATE`
+    19. Click the download button on the right in the row of the ID you just created. Rename the file to `config.json`
+    20. Place `config.json` into the folder with the rest of the program
     
 <p align="center">
     <img alt="Folder contents before oauth" src="readmeimages/folder_contents_before_auth.png">
