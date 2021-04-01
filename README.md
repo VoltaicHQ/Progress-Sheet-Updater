@@ -19,8 +19,8 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
 
 2. Download and extract the latest release of this tool from [here](https://github.com/VoltaicHQ/Progress-Sheet-Updater/releases). I recommend [7zip](https://www.7-zip.org/) for extracting zip files.
 
-2. Go [here](https://developers.google.com/workspace/guides/create-project), and ensure you are logged in to the same Google Account that owns your progress sheet. Then:
-    Since Google has updated their site this now takes more work than before.
+2. Go [here](https://developers.google.com/workspace/guides/create-project), and ensure you are logged in to the same Google Account that owns your progress sheet. Then:  
+    (Since Google has updated their site this now takes more work than before.)  
 
     1. Follow the steps of the upper guide, you dont need to enable the `Google Sheets API` since it is enabled by default
     2. Click the `menu button` on the top left
@@ -40,8 +40,8 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
     16. Choose `Credentials` in the bar on the right
     17. Press `CREATE CREDENTIALS`, choose `OAuth client ID`
     18. Choose `Desktop app`, give it a name and click `CREATE`
-    19. Click the download button on the right in the row of the ID you just created. Rename the file to `config.json`
-    20. Place `config.json` into the folder with the rest of the program
+    19. Click the download button on the right in the row of the ID you just created. Rename the file to `credentials.json`
+    20. Place `credentials.json` into the folder with the rest of the program
     
 <p align="center">
     <img alt="Folder contents before oauth" src="readmeimages/folder_contents_before_auth.png">
