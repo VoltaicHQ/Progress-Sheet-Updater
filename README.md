@@ -25,23 +25,27 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
     1. Follow the steps of the upper guide, you dont need to enable the `Google Sheets API` since it is enabled by default
     2. Click the `menu button` on the top left
     3. Choose `APIs & Services`
-    4. Choose `Google Sheets API` from the list of APIs in the bottom
-    5. Click the `Create Credentials` button on the middle right
-    6. Choose the `Google Sheets API`
-    7. Choose `Other UI`
-    8. Choose `User data`
-    9. Click `What credentials do I need?`
-    10. Click `SET UP CONSENT SCREEN`
-    11. Choose `external`
-    12. Enter the information (don't worry only you will be able to see whatever u enter)
-    13. Click `ADD OR REMOVE SCOPES`, then paste `https://www.googleapis.com/auth/spreadsheets` into the textfield on the bottom and click `ADD TO TABLE`
-    14. Click `UPDATE`, then click `SAVE AND CONTINUE`
-    15. Click `ADD USERS` and add ur email address into the Test users and save the changes
-    16. Choose `Credentials` in the bar on the right
-    17. Press `CREATE CREDENTIALS`, choose `OAuth client ID`
-    18. Choose `Desktop app`, give it a name and click `CREATE`
-    19. Click the download button on the right in the row of the ID you just created. Rename the file to `credentials.json`
-    20. Place `credentials.json` into the folder with the rest of the program
+    5. Type `Google Sheets API` from the list of APIs in the bottom, and add it to your project if it isn't already
+    6. Click the `menu button` on the top left
+    7. Choose `APIs & Services`
+    8. Choose the `Google Sheets API` from the list in the bottom
+    9. Click `Credentials`
+    10. Click the `Create Credentials` button on the middle right
+    11. Choose the `Google Sheets API`
+    12. Choose `Other UI`
+    13. Choose `User data`
+    14. Click `What credentials do I need?`
+    15. Click `SET UP CONSENT SCREEN`
+    16. Choose `external`
+    17. Enter the information (don't worry only you will be able to see whatever u enter)
+    18. Click `ADD OR REMOVE SCOPES`, then paste `https://www.googleapis.com/auth/spreadsheets` into the textfield on the bottom and click `ADD TO TABLE`
+    19. Click `UPDATE`, then click `SAVE AND CONTINUE`
+    20. Click `ADD USERS` and add ur email address into the Test users and save the changes
+    21. Choose `Credentials` in the bar on the right
+    22. Press `CREATE CREDENTIALS`, choose `OAuth client ID`
+    23. Choose `Desktop app`, give it a name and click `CREATE`
+    24. Click the download button on the right in the row of the ID you just created. Rename the file to `credentials.json`
+    25. Place `credentials.json` into the folder with the rest of the program
     
 <p align="center">
     <img alt="Folder contents before oauth" src="readmeimages/folder_contents_before_auth.png">
