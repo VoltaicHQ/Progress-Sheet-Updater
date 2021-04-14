@@ -13,13 +13,13 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
 
 ## Quickstart Guide
 
-####    This Guide is also available as a [video](https://youtu.be/BDUUy-ajyrk)
+####    This Guide is also available as a [video](https://youtu.be/BDUUy-ajyrk) (note that the video is missing the third part of this written guide due to google updates, so you will have to follow this written guide for it)
 
 1. Make a copy of the [Voltaic Benchmark Progress Sheet](https://docs.google.com/spreadsheets/d/1L6iCXTaSheZtVwtVR4b_FYJzcCZbEYVRsdFo7PI3HTk/) if you don't already have one. This requires a Google account.
 
 2. Download and extract the latest release of this tool from [here](https://github.com/VoltaicHQ/Progress-Sheet-Updater/releases). I recommend [7zip](https://www.7-zip.org/) for extracting zip files.
 
-2. Go [here](https://developers.google.com/workspace/guides/create-project), and ensure you are logged in to the same Google Account that owns your progress sheet. Then:  
+3. Go [here](https://developers.google.com/workspace/guides/create-project), and ensure you are logged in to the same Google Account that owns your progress sheet. Then:  
     (Since Google has updated their site this now takes more work than before.)  
 
     1. Follow the steps of the upper guide, you dont need to enable the `Google Sheets API` since it is enabled by default
@@ -37,10 +37,10 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
     14. Click `What credentials do I need?`
     15. Click `SET UP CONSENT SCREEN`
     16. Choose `external`
-    17. Enter the information (don't worry only you will be able to see whatever u enter)
+    17. Enter the information (don't worry only you will be able to see whatever you enter)
     18. Click `ADD OR REMOVE SCOPES`, then paste `https://www.googleapis.com/auth/spreadsheets` into the textfield on the bottom and click `ADD TO TABLE`
     19. Click `UPDATE`, then click `SAVE AND CONTINUE`
-    20. Click `ADD USERS` and add ur email address into the Test users and save the changes
+    20. Click `ADD USERS` and add your email address into the Test users and save the changes
     21. Choose `Credentials` in the bar on the right
     22. Press `CREATE CREDENTIALS`, choose `OAuth client ID`
     23. Choose `Desktop app`, give it a name and click `CREATE`
@@ -51,10 +51,10 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
     <img alt="Folder contents before oauth" src="readmeimages/folder_contents_before_auth.png">
 </p>
 
-3. Run `ProgressSheetUpdater.exe`. A GUI will open, this GUI is used to edit the configuration of the program.
+4. Run `ProgressSheetUpdater.exe`. A GUI will open, this GUI is used to edit the configuration of the program.
     
-    1. Click the `Browse`-Button on the top right and navigate to your Kovaak's stats folder.
-    2. Paste the link to your Progress Sheet into the entryfield.
+    1. Click the `Browse`-Button on the top right and navigate to your Kovaak's stats folder.  
+    2. Paste the link to your Progress Sheet into the entryfield.  
     3. Check the settings that you wish to use.  
         `Calculate Averages`: The Program will calculate and fill the average columns  
         `Open Config`: The GUI window will open when the program is started (if you disable this you have to manually reenable it by editing the `config.json`)  
@@ -66,7 +66,7 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
          3. `interval`: Program will update sheet once every x seconds  
         `Add/Remove Range`: Used to add/remove scenarios to track, it is recommended to not change this setting unless you know what you are doing  
 
-    4. The first time you run the program you will be prompted to:
+5. The first time you run the program you will be prompted to:
 
         1. Choose the account that owns your progress sheet.
         2. Click `Advanced` in the bottom-left, then `Go to Quickstart (unsafe)`.
