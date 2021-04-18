@@ -22,30 +22,31 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
 3. Go [here](https://developers.google.com/workspace/guides/create-project), and ensure you are logged in to the same Google Account that owns your progress sheet. Then:  
     (Since Google has updated their site this now takes more work than before.)  
 
-    1. Follow the steps of the upper guide, you dont need to enable the `Google Sheets API` since it is enabled by default
-    2. Click the `menu button` on the top left
-    3. Choose `APIs & Services`
-    5. Type `Google Sheets API` from the list of APIs in the bottom, and add it to your project if it isn't already
-    6. Click the `menu button` on the top left
-    7. Choose `APIs & Services`
-    8. Choose the `Google Sheets API` from the list in the bottom
-    9. Click `Credentials`
-    10. Click the `Create Credentials` button on the middle right
-    11. Choose the `Google Sheets API`
-    12. Choose `Other UI`
-    13. Choose `User data`
-    14. Click `What credentials do I need?`
-    15. Click `SET UP CONSENT SCREEN`
-    16. Choose `external`
-    17. Enter the information (don't worry only you will be able to see whatever you enter)
-    18. Click `ADD OR REMOVE SCOPES`, then paste `https://www.googleapis.com/auth/spreadsheets` into the textfield on the bottom and click `ADD TO TABLE`
-    19. Click `UPDATE`, then click `SAVE AND CONTINUE`
-    20. Click `ADD USERS` and add your email address into the Test users and save the changes
-    21. Choose `Credentials` in the bar on the right
-    22. Press `CREATE CREDENTIALS`, choose `OAuth client ID`
-    23. Choose `Desktop app`, give it a name and click `CREATE`
-    24. Click the download button on the right in the row of the ID you just created. Rename the file to `credentials.json`
-    25. Place `credentials.json` into the folder with the rest of the program
+    1. Click the link in step 1 of the `Create a new Google Cloud Platform (GCP) project, Google Cloud Console`  
+    2. At the top left, next to `Google Cloud Platform`, click `Select a project`
+    3. Click `NEW PROJECT` at the top right corner of the new window that pops up
+    4. Type any name you like in the `Project Name` field and click the `CREATE` button under the `Location` field
+    5. Wait until a green check mark shows up in the notification window at the top right of the window indicating that the creation of your project is complete. Then click APIs & Services on the menu to the left
+    6. Click the project you just created
+    7. The Google Sheets API might show up in the list at the bottom - click it if it does. If not, click the `ENABLE APIS AND SERVICES` button at the top. Click the `Search for APIs & Services` text field and type `Google Sheets API`. Click the `Google Sheets API` box. Click `Enable` and wait for it to open
+    8. Click `Credentials` on the menu to the left
+    9. Click the `Create Credentials` button near the top and select `OAuth client ID`
+    10. Click the `CONFIGURE CONSENT SCREEN` button on the right
+    11. Select the `External` option and click the `CREATE` button underneath it
+    12. In the `App information` section—in the `App name` field, type whatever you want to name your app. In the `User support email` field, type the email address for the Google account that owns your progress sheet. In the `Developer contact information` section near the bottom of the page—in the `Email addresses` field, type the email address for the Google account that owns your progress sheet
+    13. Click the `SAVE AND CONTINUE` button at the bottom of the page
+    14. Click the `ADD OR REMOVE SCOPES` button
+    15. In the `Update selected scopes` menu that opens on the right side of the screen, at the bottom, under the `Manually add scopes` section, paste ht<span>tps://ww</span>w.googleapis.com/auth/spreadsheets in the text box and click the `ADD TO TABLE` button underneath
+    16. Click the `UPDATE` button at the bottom of the menu, then click the `SAVE AND CONTINUE` button at the bottom
+    17. Click the `ADD USERS` button, type the email address for the Google account that owns your progress sheet into the text box on the right and click the `ADD` button underneath it
+    18. Click the `SAVE AND CONTINUE` button
+    19. Click `Credentials` on the left menu
+    20. Click the `CREATE CREDENTIALS` button at the top and select `OAuth client ID`
+    21. Click the `Application type` drop-down menu and select `Web application`
+    22. In the `Name` field, write whatever name you want and click the `Create` button at the bottom.
+    23. Click the `OK` button
+    24. Under the `OAuth 2.0 Client IDs` section, your ID will be listed. Click the download icon on the far right of the row of your newly created ID
+    25. Name it `credentials.json` and save it in the folder with the rest of the program
     
 <p align="center">
     <img alt="Folder contents before oauth" src="readmeimages/folder_contents_before_auth.png">
