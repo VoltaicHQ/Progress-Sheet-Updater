@@ -42,7 +42,7 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
     18. Click the `SAVE AND CONTINUE` button
     19. Click `Credentials` on the left menu
     20. Click the `CREATE CREDENTIALS` button at the top and select `OAuth client ID`
-    21. Click the `Application type` drop-down menu and select `Web application`
+    21. Click the `Application type` drop-down menu and select `Desktop application`
     22. In the `Name` field, write whatever name you want and click the `Create` button at the bottom.
     23. Click the `OK` button
     24. Under the `OAuth 2.0 Client IDs` section, your ID will be listed. Click the download icon on the far right of the row of your newly created ID
