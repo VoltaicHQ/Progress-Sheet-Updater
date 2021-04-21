@@ -13,7 +13,7 @@ Easily keep track of additional scenarios beyond the scope of the Voltaic Benchm
 
 ## Quickstart Guide
 
-####    This Guide is also available as a [video](https://youtu.be/BDUUy-ajyrk) (note that the video is missing the third part of this written guide due to google updates, so you will have to follow this written guide for it)
+####    This Guide is also available as a [video](https://www.youtube.com/watch?v=awBoG9Jy8CY) (please make sure to check the pinned comment of the video for further information)
 
 1. Make a copy of the [Voltaic Benchmark Progress Sheet](https://docs.google.com/spreadsheets/d/1L6iCXTaSheZtVwtVR4b_FYJzcCZbEYVRsdFo7PI3HTk/) if you don't already have one. This requires a Google account.
 
