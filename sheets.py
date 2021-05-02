@@ -6,6 +6,7 @@ from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from google.auth.exceptions import RefreshError
 
 from errors import handle_error
 
@@ -63,7 +64,15 @@ def create_service():
     try:
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
+                try:
+                    creds.refresh(Request())
+                except RefreshError:
+                    os.remove("token.pickle")
+                    flow = InstalledAppFlow.from_client_secrets_file(
+                        'credentials.json', scopes)
+                    creds = flow.run_local_server(port=0)
+
+
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(
                     'credentials.json', scopes)
