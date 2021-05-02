@@ -11,6 +11,10 @@ Run it before checking your progress sheet, or leave it running in the backgroun
 
 Easily keep track of additional scenarios beyond the scope of the Voltaic Benchmarks through the configuration file.
 
+## Updating
+
+If you want to update to a newer release all you have to do is download the newest one. Then move the ProgressSheetUpdater.exe over into your old folder.  
+
 ## Quickstart Guide
 
 ####    This Guide is also available as a [video](https://www.youtube.com/watch?v=awBoG9Jy8CY) (please make sure to check the pinned comment of the video for further information)
