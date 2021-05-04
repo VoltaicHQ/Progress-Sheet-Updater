@@ -9,6 +9,8 @@ This tool updates your [Voltaic Benchmark Progress Sheet](https://docs.google.co
 
 Run it before checking your progress sheet, or leave it running in the background to keep your sheet up-to-date as you play.
 
+If you use multiple configs you can just drag them into the .exe to make your life easier
+
 Easily keep track of additional scenarios beyond the scope of the Voltaic Benchmarks through the configuration file.
 
 ## Updating
@@ -78,10 +80,6 @@ If you want to update to a newer release all you have to do is download the newe
         3. Click `Allow`.
         4. Click `Allow` again. A file called `token.pickle` will be saved to avoid future prompts.
         
-## Updating to v1.1
- If you already used version 1.0 and now want to update, you can download the new release, and move over the `token.pickle`  
- and the `credentials.json` from your old folder to the new one. Make sure that you use the new `config.json`.
-
 ## Build It Yourself
 
 Windows with Python 3.7+,
