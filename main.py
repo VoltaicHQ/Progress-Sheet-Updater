@@ -209,6 +209,8 @@ if __name__ == "__main__":
     logging.config.fileConfig('logging.conf')
     sys.excepthook = handle_exception
     config_file = 'config.json'
+    if len(sys.argv) > 1:
+        config_file = sys.argv[1]
     if not os.path.isfile(config_file):
         logging.error("Failed to find config file: %s", config_file)
         sys.exit(1)
