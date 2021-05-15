@@ -8,15 +8,18 @@ import time
 import urllib.request
 from dataclasses import dataclass, field
 from datetime import datetime
+from json import JSONDecodeError
 from threading import Timer
 
 import googleapiclient.discovery
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
+from conf import LOG_FILE_PATH
 from errors import handle_error
 from gui import Gui
 from sheets import create_service, read_sheet_range, validate_sheet_range, write_to_cell
+from helpers import load_config_file
 
 
 @dataclass
@@ -205,27 +208,35 @@ def handle_exception(exc_type, exc_value, exc_traceback):
 
     logging.error("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
 
+
 if __name__ == "__main__":
-    logging.config.fileConfig('logging.conf')
+    logging.config.fileConfig(LOG_FILE_PATH)
     sys.excepthook = handle_exception
-    config_file = 'config.json'
+
     if len(sys.argv) > 1:
-        config_file = sys.argv[1]
-    if not os.path.isfile(config_file):
-        logging.error("Failed to find config file: %s", config_file)
+        config_file_name = sys.argv[1]
+    else:
+        config_file_name = 'config.json'
+
+    try:
+        config = load_config_file(config_file_name)
+    except FileNotFoundError:
+        logging.error(f'Failed to find config file: {config_file_name}')
+        sys.exit(1)
+    except JSONDecodeError:
+        logging.error(f'Incorrect config format: {config_file_name}')
         sys.exit(1)
 
-    config = json.load(open(config_file, 'r'))
     gui = Gui(**config)
     gui.main()
 
+    # config might have changed - reload
     try:
-        config = json.load(open(config_file, 'r'))
-        logging.debug(json.dumps(config, indent=2))
-    except Exception as err:
-        logging.debug(json.dumps(config, indent=2))
+        config = load_config_file(config_file_name)
+    except (FileNotFoundError, JSONDecodeError):
         handle_error('no_credentials')
-
+    else:
+        logging.debug(json.dumps(config, indent=2))
 
     logging.debug("Creating service...")
     sheet_api = create_service()

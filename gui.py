@@ -2,6 +2,8 @@ import json
 from tkinter import *
 from tkinter import filedialog
 
+from helpers import open_project_file
+
 
 class Gui:
     def __init__(self, **kwargs):
@@ -85,7 +87,7 @@ class Gui:
         self.config["scenario_name_ranges"] = [entry.get() for entry in self.name_ranges_entries]
         self.config["highscore_ranges"] = [entry.get() for entry in self.highscore_ranges_entries]
         self.config["average_ranges"] = [entry.get() for entry in self.average_ranges_entries]
-        with open("config.json", "w") as outfile:
+        with open_project_file("config.json", "w") as outfile:
             json.dump(self.config, outfile, indent=4)
         self.window.destroy()
 

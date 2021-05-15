@@ -8,6 +8,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google.auth.exceptions import RefreshError
 
+from conf import SPREADSHEET_CREDENTIALS_FILE_PATH, SPREADSHEET_TOKEN_FILE_PATH
 from errors import handle_error
 
 
@@ -51,15 +52,16 @@ def write_to_cell(api, id, cell, val):
 
 # https://developers.google.com/sheets/api/quickstart/python
 def create_service():
-    if not os.path.exists('credentials.json'):
+    if not os.path.exists(SPREADSHEET_CREDENTIALS_FILE_PATH):
         handle_error('no_credentials')
 
     scopes = ['https://www.googleapis.com/auth/spreadsheets']
-    creds = None
 
-    if os.path.exists('token.pickle'):
-        with open('token.pickle', 'rb') as token:
+    if os.path.exists(SPREADSHEET_TOKEN_FILE_PATH):
+        with open(SPREADSHEET_TOKEN_FILE_PATH, 'rb') as token:
             creds = pickle.load(token)
+    else:
+        creds = None
 
     try:
         if not creds or not creds.valid:
@@ -67,18 +69,18 @@ def create_service():
                 try:
                     creds.refresh(Request())
                 except RefreshError:
-                    os.remove("token.pickle")
+                    os.remove(SPREADSHEET_TOKEN_FILE_PATH)
                     flow = InstalledAppFlow.from_client_secrets_file(
-                        'credentials.json', scopes)
+                        SPREADSHEET_CREDENTIALS_FILE_PATH, scopes)
                     creds = flow.run_local_server(port=0)
 
 
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    'credentials.json', scopes)
+                    SPREADSHEET_CREDENTIALS_FILE_PATH, scopes)
                 creds = flow.run_local_server(port=0)
 
-            with open('token.pickle', 'wb') as token:
+            with open(SPREADSHEET_TOKEN_FILE_PATH, 'wb') as token:
                 pickle.dump(creds, token)
 
         service = build('sheets', 'v4', cache_discovery=False, credentials=creds)
