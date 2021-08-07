@@ -21,7 +21,7 @@ If you want to update to a newer release all you have to do is download the newe
 
 ####    This Guide is also available as a [video](https://www.youtube.com/watch?v=awBoG9Jy8CY) (please make sure to check the pinned comment of the video for further information)
 
-1. Make a copy of the [Voltaic Benchmark Progress Sheet](https://docs.google.com/spreadsheets/d/1L6iCXTaSheZtVwtVR4b_FYJzcCZbEYVRsdFo7PI3HTk/) if you don't already have one. This requires a Google account.
+1. Make a copy of the [Voltaic Benchmark Progress Sheet](https://docs.google.com/spreadsheets/d/1yHj87rQNW2WsuH24UoKZajNwNpI6CVyUjR3AwBMbnnY/edit#gid=1324419980/) if you don't already have one. This requires a Google account.
 
 2. Download and extract the latest release of this tool from [here](https://github.com/VoltaicHQ/Progress-Sheet-Updater/releases). I recommend [7zip](https://www.7-zip.org/) for extracting zip files.
 
