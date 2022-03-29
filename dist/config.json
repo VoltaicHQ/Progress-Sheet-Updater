@@ -3,14 +3,14 @@
 	"sheet_id_kovaaks": "your_kovaaks_sheet_id_here",
 	"sheet_id_aimlab": "your_aimlab_sheet_id_here",
 	"scenario_name_ranges": [
-		"Novice!C3:C8",
-		"Intermediate!C3:C14",
-		"Advanced!C3:C20"
+		"Novice!C3:C14",
+		"Intermediate!C3:C18",
+		"Advanced!C3:C18"
 	],
 	"highscore_ranges": [
-		"Novice!F3:F8",
-		"Intermediate!F3:F14",
-		"Advanced!F3:F20"
+		"Novice!E3:E14",
+		"Intermediate!E3:E18",
+		"Advanced!E3:E18"
 	],
 	"average_ranges": [
 		"",
