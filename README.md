@@ -5,23 +5,23 @@
 
 ## About
 
-This tool updates your [Voltaic Benchmark Progress Sheet](https://docs.google.com/spreadsheets/d/1yHj87rQNW2WsuH24UoKZajNwNpI6CVyUjR3AwBMbnnY/) with high scores and averages of completed challenges on [KovaaK](https://store.steampowered.com/app/824270/KovaaK_20/).
+This tool can update your Voltaic Benchmark Progress Sheet for both [Aimlab](https://docs.google.com/spreadsheets/d/11PMV6ACarUZKk16oSumx-3rZHGihOc89l-nrpcZ9qfM) and [Kovaaks](https://docs.google.com/spreadsheets/d/1qUzF2KHcfs_FgsaDFRfGsLgHhoC1Md5bzMOUbsYzSjg) with high scores and averages of completed tasks/scenarios.
 
 Run it before checking your progress sheet, or leave it running in the background to keep your sheet up-to-date as you play.
 
 If you use multiple configs you can just drag them into the .exe to make your life easier
 
-Easily keep track of additional scenarios beyond the scope of the Voltaic Benchmarks through the configuration file.
+Easily keep track of additional scenarios beyond the scope of the Voltaic Benchmarks through the configuration file (Kovaaks only).
 
 ## Updating
 
-If you want to update to a newer release all you have to do is download the newest one. Then move the ProgressSheetUpdater.exe over into your old folder.  
+If you want to update to a newer release all you have to do is download the newest one. Unzip the files and move them over into your old folder.  
 
 ## Quickstart Guide
 
 ####    This Guide is also available as a [video](https://www.youtube.com/watch?v=awBoG9Jy8CY) (please make sure to check the pinned comment of the video for further information)
 
-1. Make a copy of the [Voltaic Benchmark Progress Sheet](https://docs.google.com/spreadsheets/d/1yHj87rQNW2WsuH24UoKZajNwNpI6CVyUjR3AwBMbnnY/edit#gid=1324419980/) if you don't already have one. This requires a Google account.
+1. Make a copy of the Voltaic Benchmark Progress Sheet for [Aimlab](https://docs.google.com/spreadsheets/d/11PMV6ACarUZKk16oSumx-3rZHGihOc89l-nrpcZ9qfM), [Kovaaks](https://docs.google.com/spreadsheets/d/1qUzF2KHcfs_FgsaDFRfGsLgHhoC1Md5bzMOUbsYzSjg) or both if you don't already have them. This requires a Google account.
 
 2. Download and extract the latest release of this tool from [here](https://github.com/VoltaicHQ/Progress-Sheet-Updater/releases). I recommend [7zip](https://www.7-zip.org/) for extracting zip files.
 
@@ -59,9 +59,11 @@ If you want to update to a newer release all you have to do is download the newe
 </p>
 
 4. Run `ProgressSheetUpdater.exe`. A GUI will open, this GUI is used to edit the configuration of the program.
-    
+
+5. Choose between Kovaaks or Aimlab via the tabs at the top left.
+    #### Kovaaks
     1. Click the `Browse`-Button on the top right and navigate to your Kovaak's stats folder.  
-    2. Paste the link to your Progress Sheet into the entryfield.  
+    2. Paste the link to your Kovaaks Progress Sheet into the entryfield.  
     3. Check the settings that you wish to use.  
         `Calculate Averages`: The Program will calculate and fill the average columns  
         `Open Config`: The GUI window will open when the program is started (if you disable this you have to manually reenable it by editing the `config.json`)  
@@ -72,7 +74,18 @@ If you want to update to a newer release all you have to do is download the newe
          2. `watchdog`: Program will update sheet once a new score is added  
          3. `interval`: Program will update sheet once every x seconds  
         `Add/Remove Range`: Used to add/remove scenarios to track, it is recommended to not change this setting unless you know what you are doing  
-
+    
+    #### Aimlab
+    1. Paste the link to your Aimlab Progress Sheet into the entryfield.
+    2. Check the settings that you wish to use
+        `Calculate Averages`: The Program will calculate and fill the average columns  
+        `Open Config`: The GUI window will open when the program is started (if you disable this you have to manually reenable it by editing the `config.json`)  
+        `Polling Interval`: Time between updates when using the `interval` Run Mode  
+        `Number of runs to average`: Amount of runs used to calculate the averages  
+        `Run Mode`: Types of updating the scores  
+         1. `once`: Program will run once and then close  
+         2. `watchdog`: Program will update sheet once a new score is added  
+         3. `interval`: Program will update sheet once every x seconds  
 5. The first time you run the program you will be prompted to:
 
         1. Choose the account that owns your progress sheet.
