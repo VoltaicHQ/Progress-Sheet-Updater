@@ -10,3 +10,5 @@ elif __file__:
 LOG_FILE_PATH = os.path.join(PROJECT_DIR, 'logging.conf')
 SPREADSHEET_TOKEN_FILE_PATH = os.path.join(PROJECT_DIR, 'token.pickle')
 SPREADSHEET_CREDENTIALS_FILE_PATH = os.path.join(PROJECT_DIR, 'credentials.json')
+AIMLAB_DB_PATH = os.path.abspath(os.path.join(os.getenv("APPDATA"), os.pardir, "LocalLow\\statespace\\aimlab_tb"
+                                                                               "\\klutch.bytes"))
