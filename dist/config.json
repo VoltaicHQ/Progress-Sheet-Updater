@@ -13,9 +13,9 @@
 		"Advanced!E3:E18"
 	],
 	"average_ranges": [
-		"",
-		"",
-		""
+		"Novice!I3:I8",
+        "Intermediate!I3:I18",
+        "Advanced!I3:I18"
 	],
 	"aimlab_name_ranges": [
 		"Novice!C3:C8",
@@ -27,9 +27,14 @@
 		"Intermediate!F3:F14",
 		"Advanced!F3:F20"
 	],
+	"aimlab_average_ranges": [
+        "Novice!J3:J8",
+        "Intermediate!J3:J14",
+        "Advanced!J3:J20"
+    ],
 	"run_mode": "watchdog",
 	"game": "Kovaaks",
-	"calculate_averages": false,
+	"calculate_averages": true,
 	"num_of_runs_to_average": 5,
 	"polling_interval": 60,
 	"open_config": true

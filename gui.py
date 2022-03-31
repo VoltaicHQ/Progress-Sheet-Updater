@@ -130,18 +130,6 @@ class Gui:
             sheet_id_entry_kovaaks.pack(fill="x")
             sheet_id_frame_kovaaks.pack(fill="x")
 
-            # Runs to average
-            runs_to_average_frame = Frame(self.kovaaks_frame)
-            runs_to_average_entry = Entry(runs_to_average_frame, textvariable=self.runs_to_average, width=3)
-            runs_to_average_label = Label(runs_to_average_frame, text="Number of runs to average")
-            runs_to_average_entry.pack(side="left")
-            runs_to_average_label.pack(side="left")
-            # Calculate Averages (Kovaaks only atm)
-            calculate_averages_box = Checkbutton(runs_to_average_frame, variable=self.calculate_averages,
-                                                 text="Calculate Averages")
-            calculate_averages_box.pack(side="top")
-            runs_to_average_frame.pack(side="top")
-
             # Aimlab tab of the notebook
             aimlab_frame = Frame(self.notebook)
 
@@ -159,21 +147,33 @@ class Gui:
             advanced_frame = LabelFrame(self.window, text="Advanced Options")
             # Open config
             open_config_box = Checkbutton(advanced_frame, text="Open config", variable=self.open_config)
-            open_config_box.grid(row="0", column="2", padx=advanced_padding_x, pady=advanced_padding_y)
+            open_config_box.grid(row="0", column="0", padx=advanced_padding_x, pady=advanced_padding_y)
             # Polling interval
             polling_interval_frame = Frame(advanced_frame)
             polling_interval_label = Label(polling_interval_frame, text="Polling Interval")
             polling_interval_entry = Entry(polling_interval_frame, textvariable=self.polling_interval, width=5)
             polling_interval_entry.pack(side="left")
             polling_interval_label.pack(side="left")
-            polling_interval_frame.grid(row="0", column="3", padx=advanced_padding_x, pady=advanced_padding_y)
+            polling_interval_frame.grid(row="0", column="1", padx=advanced_padding_x, pady=advanced_padding_y)
             # Run mode
             run_mode_frame = Frame(advanced_frame)
             run_mode_label = Label(run_mode_frame, text="Run Mode")
             run_mode_dropdown = OptionMenu(run_mode_frame, self.run_mode, *self.run_mode_options)
             run_mode_label.pack(side="left")
             run_mode_dropdown.pack(side="left")
-            run_mode_frame.grid(row="0", column="4", padx=advanced_padding_x, pady=advanced_padding_y)
+            run_mode_frame.grid(row="0", column="2", padx=advanced_padding_x, pady=advanced_padding_y)
+
+            # Runs to average
+            runs_to_average_frame = Frame(advanced_frame)
+            runs_to_average_entry = Entry(runs_to_average_frame, textvariable=self.runs_to_average, width=3)
+            runs_to_average_label = Label(runs_to_average_frame, text="Number of runs to average")
+            runs_to_average_entry.pack(side="left")
+            runs_to_average_label.pack(side="left")
+            # Calculate Averages (Kovaaks only atm)
+            calculate_averages_box = Checkbutton(runs_to_average_frame, variable=self.calculate_averages,
+                                                 text="Calculate Averages")
+            calculate_averages_box.pack(side="top")
+            runs_to_average_frame.grid(row="0", column="3", padx=advanced_padding_x, pady=advanced_padding_y)
 
             # Ranges
             i = 0

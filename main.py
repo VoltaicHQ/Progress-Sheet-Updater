@@ -88,7 +88,7 @@ def init_scenario_data_kovaaks(config: dict, sheet_api: googleapiclient.discover
 
 def init_scenario_data_aimlab(config: dict, sheet_api: googleapiclient.discovery.Resource) -> dict:
     hs_cells_iter = cells_from_sheet_ranges(config['aimlab_score_ranges'])
-    # avg_cells_iter = cells_from_sheet_ranges(config['average_ranges'])
+    avg_cells_iter = cells_from_sheet_ranges(config['aimlab_average_ranges'])
 
     scens = {}
 
@@ -99,24 +99,24 @@ def init_scenario_data_aimlab(config: dict, sheet_api: googleapiclient.discovery
                 scens[s] = Scenario()
 
             scens[s].hs_cells.append(next(hs_cells_iter))
-            # scens[s].avg_cells.append(next(avg_cells_iter))
+            scens[s].avg_cells.append(next(avg_cells_iter))
             scens[s].ids.append(i)
             i += 1
 
     highscores = []
     for r in config['aimlab_score_ranges']:
         highscores += map(lambda x: float(x), read_sheet_range(sheet_api, config["sheet_id_aimlab"], r))
-    """
+
     averages = []
-    for r in config['average_ranges']:
+    for r in config['aimlab_average_ranges']:
         averages += map(lambda x: float(x), read_sheet_range(sheet_api, config["sheet_id_aimlab"], r))
-    """
+
     if len(highscores) < len(scens):  # Require highscore cells but not averages
         handle_error('range_size')
 
     for s in scens:
         scens[s].hs = min([highscores[i] for i in scens[s].ids])
-        # scens[s].avg = min([averages[i] for i in scens[s].ids])
+        scens[s].avg = min([averages[i] for i in scens[s].ids])
 
     return scens
 
@@ -129,10 +129,9 @@ def read_score_from_file(file_path: str) -> float:
     return 0.0
 
 
-def update_aimlab(config: dict, scens: dict,
-                  cs_level_ids: dict) -> None:  # TODO check how averages are meant to be handled
+def update_aimlab(config: dict, scens: dict, cs_level_ids: dict) -> None:
     new_hs = set()
-    # new_avgs = set()
+    new_avgs = set()
 
     # Open db connection
     con = sqlite3.connect(AIMLAB_DB_PATH)
@@ -151,7 +150,7 @@ def update_aimlab(config: dict, scens: dict,
             scens[name].hs = score
             new_hs.add(name)
 
-        """if config['calculate_averages']:
+        if config['calculate_averages']:
             scens[name].recent_scores.append(score)  # Will be last N runs if files are fed chronologically
             if len(scens[name].recent_scores) > config['num_of_runs_to_average']:
                 scens[name].recent_scores.pop(0)
@@ -159,12 +158,13 @@ def update_aimlab(config: dict, scens: dict,
     if config['calculate_averages']:
         for s in scens:
             runs = scens[s].recent_scores
-            new_avg = round(sum(runs) / len(runs), 1)
+            if runs:  # If the scenario was never played this would result in a div by zero error
+                new_avg = round(sum(runs) / len(runs), 1)
             if runs and new_avg != scens[s].avg:
                 scens[s].avg = new_avg
-                new_avgs.add(s)"""
+                new_avgs.add(s)
 
-    create_output(new_hs, set(), scens, config["sheet_id_aimlab"])  # check averages here as well
+    create_output(new_hs, new_avgs, scens, config["sheet_id_aimlab"])  # check averages here as well
 
 
 def update_kovaaks(config: dict, scens: dict, files: list, blacklist: dict) -> None:
@@ -194,7 +194,8 @@ def update_kovaaks(config: dict, scens: dict, files: list, blacklist: dict) -> N
     if config['calculate_averages']:
         for s in scens:
             runs = scens[s].recent_scores
-            new_avg = round(sum(runs) / len(runs), 1)
+            if runs:  # If the scenario was never played this would result in a div by zero error
+                new_avg = round(sum(runs) / len(runs), 1)
             if runs and new_avg != scens[s].avg:
                 scens[s].avg = new_avg
                 new_avgs.add(s)
