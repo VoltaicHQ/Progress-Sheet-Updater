@@ -261,7 +261,7 @@ class LambdaDispatchEventHandler(FileSystemEventHandler):
         if event.is_directory:
             return None
         elif event.event_type == 'modified':
-            if config["game"] == "kovaaks" or event.src_path.endswith("klutch.bytes"):
+            if config["game"] == "Kovaaks" or event.src_path.endswith("klutch.bytes"):
                 self.func()
 
 
