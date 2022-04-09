@@ -1,19 +1,39 @@
 {
 	"stats_path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\FPSAimTrainer\\FPSAimTrainer\\stats",
-	"sheet_id": "your_sheet_id_here",
+	"sheet_id_kovaaks": "your_kovaaks_sheet_id_here",
+	"sheet_id_aimlab": "your_aimlab_sheet_id_here",
 	"scenario_name_ranges": [
-		"Intermediate Requirements!E3:E20",
-		"Advanced Requirements!E3:E20"
+		"Novice!C3:C14",
+		"Intermediate!C3:C18",
+		"Advanced!C3:C18"
 	],
 	"highscore_ranges": [
-		"Intermediate Requirements!G3:G20",
-		"Advanced Requirements!G3:G20"
+		"Novice!E3:E14",
+		"Intermediate!E3:E18",
+		"Advanced!E3:E18"
 	],
 	"average_ranges": [
-		"Intermediate Requirements!M3:M20",
-		"Advanced Requirements!M3:M20"
+		"Novice!I3:I14",
+        "Intermediate!I3:I18",
+        "Advanced!I3:I18"
 	],
-	"run_mode": "once",
+	"aimlab_name_ranges": [
+		"Novice!C3:C8",
+		"Intermediate!C3:C14",
+		"Advanced!C3:C20"
+	],
+	"aimlab_score_ranges": [
+		"Novice!F3:F8",
+		"Intermediate!F3:F14",
+		"Advanced!F3:F20"
+	],
+	"aimlab_average_ranges": [
+        "Novice!J3:J8",
+        "Intermediate!J3:J14",
+        "Advanced!J3:J20"
+    ],
+	"run_mode": "watchdog",
+	"game": "Kovaaks",
 	"calculate_averages": true,
 	"num_of_runs_to_average": 5,
 	"polling_interval": 60,
