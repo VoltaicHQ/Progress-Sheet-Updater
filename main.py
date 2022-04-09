@@ -129,7 +129,7 @@ def read_score_from_file(file_path: str) -> float:
     return 0.0
 
 
-def update_aimlab(config: dict, scens: dict, cs_level_ids: dict) -> None:
+def update_aimlab(config: dict, scens: dict, cs_level_ids: dict, blacklist: dict) -> None:
     new_hs = set()
     new_avgs = set()
 
@@ -138,10 +138,13 @@ def update_aimlab(config: dict, scens: dict, cs_level_ids: dict) -> None:
     cur = con.cursor()
 
     # Get scores from the database
-    cur.execute(
-        f"SELECT taskName, score FROM TaskData WHERE taskName IN ({','.join(['?'] * len(cs_level_ids.keys()))})",
-        list(cs_level_ids.keys()))
-    result = cur.fetchall()
+    result = []
+    for csid, name in cs_level_ids.items():
+        cur.execute(
+            f"SELECT taskName, score FROM TaskData WHERE taskName = ? AND createDate > date(?)",
+            [csid, blacklist[name]])
+        temp = cur.fetchall()
+        result.extend(temp)
 
     for s in result:
         name = cs_level_ids[s[0]]
@@ -238,18 +241,21 @@ def init_version_blacklist() -> dict:
     return blacklist
 
 
-def init_cs_level_ids() -> dict:
+def init_cs_level_ids_and_blacklist() -> (dict, dict):
     url = 'https://docs.google.com/spreadsheets/d/1uvXfx-wDsyPg5gM79NDTszFk-t6SL42seL-8dwDTJxw/gviz/tq?tqx=out:csv&sheet=cslevelids'
     response = urllib.request.urlopen(url)
     lines = [l.decode('utf-8') for l in response.readlines()]
     cs_level_ids = dict()
+    blacklist = dict()
     for line in lines[1:]:
         splits = line.split('","')
         name = splits[0].replace('"', '')
-        cs_level_id = splits[1].replace('"', '').replace('\n', '')
+        cs_level_id = splits[1].replace('"', '')
         cs_level_ids[cs_level_id] = name.lower()
+        date = datetime.strptime(splits[2].replace('"', '').replace('\n', ''), "%d.%m.%Y").date()
+        blacklist[name.lower()] = date
 
-    return cs_level_ids
+    return cs_level_ids, blacklist
 
 
 class LambdaDispatchEventHandler(FileSystemEventHandler):
@@ -300,9 +306,9 @@ def process_files_kovaaks():
 
 @debounce(5)
 def process_files_aimlab():
-    global config, sheet_api, scenarios, cs_level_ids
+    global config, sheet_api, scenarios, cs_level_ids, blacklist
 
-    update_aimlab(config, scenarios, cs_level_ids)
+    update_aimlab(config, scenarios, cs_level_ids, blacklist)
 
 
 if __name__ == "__main__":
@@ -333,8 +339,8 @@ if __name__ == "__main__":
         logging.debug("Initializing scenario data...")
         scenarios = init_scenario_data_aimlab(config, sheet_api)
         logging.debug("Initializing CsLevelIds...")
-        cs_level_ids = init_cs_level_ids()
-        update_aimlab(config, scenarios, cs_level_ids)
+        cs_level_ids, blacklist = init_cs_level_ids_and_blacklist()
+        update_aimlab(config, scenarios, cs_level_ids, blacklist)
 
     # Kovaaks has its data in the stats folder
     elif config["game"] == "Kovaaks":
