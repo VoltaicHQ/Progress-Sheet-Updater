@@ -311,8 +311,21 @@ def process_files_aimlab():
     update_aimlab(config, scenarios, cs_level_ids, blacklist)
 
 
+def handle_exception(exc_type, exc_value, exc_traceback):
+    """
+    Function that replaces sys.excepthook to also log uncaught exceptions, see:
+    https://stackoverflow.com/questions/6234405/logging-uncaught-exceptions-in-python/16993115#16993115
+    """
+    if issubclass(exc_type, KeyboardInterrupt):
+        sys.__excepthook__(exc_type, exc_value, exc_traceback)
+        return
+
+    logging.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+
+
 if __name__ == "__main__":
     logging.config.fileConfig('logging.conf')
+    sys.excepthook = handle_exception
 
     config_file = 'config.json'
     if not os.path.isfile(config_file):
