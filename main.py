@@ -176,7 +176,7 @@ def update_kovaaks(config: dict, scens: dict, files: list, blacklist: dict) -> N
 
     # Process new runs to populate new_hs and new_avgs
     for f in files:
-        s = f[0:f.find(" - Challenge - ")].lower()
+        s = f[0:f.find(" - Challenge - ")].lower().strip()
         if s in scens:
             if s in blacklist.keys():
                 date = f[f.find(" - Challenge - ") + 15:]
