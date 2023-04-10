@@ -27,31 +27,29 @@ If you want to update to a newer release, all you have to do is download the new
 
 3. Go [here](https://developers.google.com/workspace/guides/create-project), and ensure you are logged in to the same Google Account that owns your progress sheet. Then:  
 
-    1. Click the link in step 1 of the `Create a new Google Cloud Platform (GCP) project, Google Cloud Console`.  
-    2. At the top left, next to `Google Cloud Platform`, click `Select a project`.
-    3. Click `NEW PROJECT` at the top right corner of the new window that pops up.
-    4. Type any name you like in the `Project Name` field and click the `CREATE` button under the `Location` field.
-    5. Wait until a green check mark shows up in the notification window at the top right of the window indicating that the creation of your project is complete. Then click APIs & Services on the menu to the left.
-    6. Click the project you just created.
-    7. The Google Sheets API might show up in the list at the bottom - click it if it does. If not, click the `ENABLE APIS AND SERVICES` button at the top. Click the `Search for APIs & Services` text field and type `Google Sheets API`. Click the `Google Sheets API` box. Click `Enable` and wait for it to open.
-    8. Click `Credentials` on the menu to the left.
-    9. Click the `Create Credentials` button near the top and select `OAuth client ID`.
-    10. Click the `CONFIGURE CONSENT SCREEN` button on the right.
-    11. Select the `External` option and click the `CREATE` button underneath it.
-    12. In the `App information` section—in the `App name` field, type whatever you want to name your app. In the `User support email` field, type the email address for the Google account that owns your progress sheet. In the `Developer contact information` section near the bottom of the page—in the `Email addresses` field, type the email address for the Google account that owns your progress sheet.
-    13. Click the `SAVE AND CONTINUE` button at the bottom of the page.
-    14. Click the `ADD OR REMOVE SCOPES` button.
-    15. In the `Update selected scopes` menu that opens on the right side of the screen, at the bottom, under the `Manually add scopes` section, paste ht<span>tps://ww</span>w.googleapis.com/auth/spreadsheets in the text box and click the `ADD TO TABLE` button underneath.
-    16. Click the `UPDATE` button at the bottom of the menu, then click the `SAVE AND CONTINUE` button at the bottom.
-    17. Click the `ADD USERS` button, type the email address for the Google account that owns your progress sheet into the text box on the right and click the `ADD` button underneath it.
-    18. Click the `SAVE AND CONTINUE` button.
-    19. Click `Credentials` on the left menu.
-    20. Click the `CREATE CREDENTIALS` button at the top and select `OAuth client ID`.
-    21. Click the `Application type` drop-down menu and select `Desktop application`.
-    22. In the `Name` field, write whatever name you want and click the `Create` button at the bottom.
-    23. Click the `OK` button.
-    24. Under the `OAuth 2.0 Client IDs` section, your ID will be listed. Click the download icon on the far right of the row of your newly created ID.
-    25. Name it `credentials.json` and save it in the folder with the rest of the program.
+    1. Click the link `Go to create a Project` in step 1.
+    2. Type any name you like in the `Project Name` field and click the `CREATE` button under the `Location` field.
+    3. Wait until a green check mark shows up in the notification window at the top right of the window indicating that the creation of your project is complete. Then click APIs & Services on the menu to the left.
+    4. Click the project you just created.
+    5. The Google Sheets API might show up in the list at the bottom - click it if it does. If not, click the `ENABLE APIS AND SERVICES` button at the top. Click the `Search for APIs & Services` text field and type `Google Sheets API`. Click the `Google Sheets API` box. Click `Enable` and wait for it to open.
+    6. Click `Credentials` on the menu to the left.
+    7. Click the `Create Credentials` button near the top and select `OAuth client ID`.
+    8. Click the `CONFIGURE CONSENT SCREEN` button on the right.
+    9. Select the `External` option and click the `CREATE` button underneath it.
+    10. In the `App information` section—in the `App name` field, type whatever you want to name your app. In the `User support email` field, type the email address for the Google account that owns your progress sheet. In the `Developer contact information` section near the bottom of the page—in the `Email addresses` field, type the email address for the Google account that owns your progress sheet.
+    11. Click the `SAVE AND CONTINUE` button at the bottom of the page.
+    12. Click the `ADD OR REMOVE SCOPES` button.
+    13. In the `Update selected scopes` menu that opens on the right side of the screen, at the bottom, under the `Manually add scopes` section, paste ht<span>tps://ww</span>w.googleapis.com/auth/spreadsheets in the text box and click the `ADD TO TABLE` button underneath.
+    14. Click the `UPDATE` button at the bottom of the menu, then click the `SAVE AND CONTINUE` button at the bottom.
+    15. Click the `ADD USERS` button, type the email address for the Google account that owns your progress sheet into the text box on the right and click the `ADD` button underneath it.
+    16. Click the `SAVE AND CONTINUE` button.
+    17. Click `Credentials` on the left menu.
+    18. Click the `CREATE CREDENTIALS` button at the top and select `OAuth client ID`.
+    19. Click the `Application type` drop-down menu and select `Desktop application`.
+    20. In the `Name` field, write whatever name you want and click the `Create` button at the bottom.
+    21. Click the `OK` button.
+    22. Under the `OAuth 2.0 Client IDs` section, your ID will be listed. Click the download icon on the far right of the row of your newly created ID.
+    23. Name it `credentials.json` and save it in the folder with the rest of the program.
     
 <p align="center">
     <img alt="Folder contents before oauth" src="readmeimages/folder_contents_before_auth.png">
@@ -63,7 +61,7 @@ If you want to update to a newer release, all you have to do is download the new
     #### Kovaaks
     1. Click the `Browse`-Button on the top right and navigate to your Kovaak's stats folder.  
     2. Paste the link to your Kovaaks Progress Sheet into the entryfield.  
-    3. Check the settings that you wish to use:
+    3. Check the settings that you wish to use:  
         `Calculate Averages`: The Program will calculate and fill the average columns. 
         `Open Config`: The GUI window will open when the program is started (if you disable this you have to manually reenable it by editing the `config.json`).  
         `Polling Interval`: Time between updates when using the `interval` Run Mode.  
@@ -76,7 +74,7 @@ If you want to update to a newer release, all you have to do is download the new
     
     #### Aimlab
     1. Paste the link to your Aimlab Progress Sheet into the entryfield.
-    2. Check the settings that you wish to use:
+    2. Check the settings that you wish to use:  
         `Calculate Averages`: The Program will calculate and fill the average columns.  
         `Open Config`: The GUI window will open when the program is started (if you disable this you have to manually reenable it by editing the `config.json`).  
         `Polling Interval`: Time between updates when using the `interval` Run Mode.  
