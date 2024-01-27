@@ -82,13 +82,16 @@ If you want to update to a newer release, all you have to do is download the new
         `Run Mode`: Types of updating the scores.  
          1. `once`: Program will run once and then close.  
          2. `watchdog`: Program will update sheet once a new score is added.  
-         3. `interval`: Program will update sheet once every x seconds.  
+         3. `interval`: Program will update sheet once every x seconds.
+
 6. The first time you run the program, you will be prompted to:
 
         1. Choose the account that owns your progress sheet.
         2. Click `Advanced` in the bottom-left, then `Go to Quickstart (unsafe)`.
         3. Click `Allow`.
         4. Click `Allow` again. A file called `token.pickle` will be saved to avoid future prompts.
+
+- If you are encountering errors trying to go through the authentication flow when running the program for the first time (e.g. Google's `Something went wrong` error), this may be due to errors with cookies. Browsers like Firefox, as well as any extensions preventing cookie tracking, may end up preventing the authentication flow from fully completing. If this occurs, try doing the authentication flow through Chrome, and disabling any extensions that prevent cookie tracking.
         
 ## Build It Yourself
 
